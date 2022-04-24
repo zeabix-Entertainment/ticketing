@@ -9,6 +9,7 @@ import { app } from '../app';
       signin(): Promise<string[]>;
     }
   }
+
 }*/
 
 declare global {
