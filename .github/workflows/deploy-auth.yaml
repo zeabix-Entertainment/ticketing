@@ -19,3 +19,9 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - run: cd auth && docker build -t zeabixdockerrepo/auth .
       - run: docker push zeabixdockerrepo/auth
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}      
+      - run: kubectl rollout restart deployment auth-depl
