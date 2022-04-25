@@ -1,5 +1,5 @@
 ## kaitest1
-name: deploy-client
+name: deploy-ticketing-client
 
 on:
   push:
@@ -17,5 +17,5 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: cd auth && docker build -t zeabixdockerrepo/client .
-      - run: docker push zeabixdockerrepo/client
+      - run: cd auth && docker build -t zeabixdockerrepo/ticketing-client .
+      - run: docker push zeabixdockerrepo/ticketing-client
