@@ -17,5 +17,5 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: cd auth && docker build -t zeabixdockerrepo/tickets .
+      - run: cd tickets && docker build -t zeabixdockerrepo/tickets .
       - run: docker push zeabixdockerrepo/tickets

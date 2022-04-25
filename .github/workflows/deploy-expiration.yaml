@@ -17,5 +17,5 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: cd auth && docker build -t zeabixdockerrepo/expiration .
+      - run: cd expiration && docker build -t zeabixdockerrepo/expiration .
       - run: docker push zeabixdockerrepo/expiration
