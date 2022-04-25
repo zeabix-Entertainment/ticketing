@@ -14,29 +14,29 @@ spec:
             backend:
               service:
                 name: payments-srv
-              service:
-                port: 3000
+                port: 
+                  number: 3000
           - path: /api/users/?(.*)
             backend:
               service:
                 name: auth-srv
-              service:
-                port: 3000
+                port: 
+                  number: 3000
           - path: /api/tickets/?(.*)
             backend:
               service:
                 name: tickets-srv
-              service:
-                port: 3000
+                port: 
+                  number: 3000
           - path: /api/orders/?(.*)
             backend:
               service: 
                 name: orders-srv
-              service:
-                port: 3000
+                port: 
+                  number: 3000
           - path: /?(.*)
             backend:
               service:
                 name: client-srv
-              service:
-                port: 3000
+                port: 
+                  number: 3000
