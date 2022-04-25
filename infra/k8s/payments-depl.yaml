@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: payments
-          image: cygnetops/payments
+          image: zeabixdockerrepo/payments
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
