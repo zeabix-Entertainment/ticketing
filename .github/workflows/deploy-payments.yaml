@@ -17,5 +17,5 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: cd auth && docker build -t zeabixdockerrepo/payments .
+      - run: cd payments && docker build -t zeabixdockerrepo/payments .
       - run: docker push zeabixdockerrepo/payments
