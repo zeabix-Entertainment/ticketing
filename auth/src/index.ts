@@ -5,7 +5,7 @@ import { app } from './app';
 
 const start = async () => {
 
-  console.log('Starting up.....xxx.dsddfdff.')
+  console.log('Starting up.....dfsdff.')
 
   if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
