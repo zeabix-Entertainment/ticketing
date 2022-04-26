@@ -29,12 +29,23 @@ jobs:
     needs: build   
     steps:
       - uses: actions/checkout@v2 
+
+      - name: envsubst-action
+        uses: danielr1996/envsubst-action@1.1.0
+        env:
+            TAG_VERSION: ${GITHUB_REF#refs/*/}
+        with:
+          input: client/deployment/client-depl.yaml
+          output: client/deployment/client-depl-go.yaml
+          
       - uses: azure/aks-set-context@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ secrets.CLUSTER_NAME }}
-          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}     
-      - run: |  
-          echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo "$TAG_VERSION" 
-          envsubst < client/deployment/client-depl.yaml | kubectl apply -f -
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}  
+      - run: kubectl apply -f client/deployment/client-depl-go.yaml
+      - run: echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - run: envsubst < client/deployment/client-depl.yaml | kubectl apply -f -
+          
+          
+          

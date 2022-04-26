@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: zeabixdockerrepo/ticketing-client:$TAG_VERSION
+          image: zeabixdockerrepo/ticketing-client:${TAG_VERSION}
 ---
 apiVersion: v1
 kind: Service
