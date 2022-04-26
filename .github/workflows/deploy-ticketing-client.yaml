@@ -3,22 +3,26 @@ name: deploy-ticketing-client
 
 on:
   push:
-    branches:
+    branches-ignore:
       - master
     paths:
       - 'client/**'
+    tags: 
+      - 'v*.*.*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd client && docker build -t zeabixdockerrepo/ticketing-client .
+      - name: Set tag env
+        run: echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+      - run: cd client && docker build -t zeabixdockerrepo/ticketing-client:$TAG_VERSION .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push zeabixdockerrepo/ticketing-client
+      - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
 
   deploy-dev:
     runs-on: ubuntu-latest 
