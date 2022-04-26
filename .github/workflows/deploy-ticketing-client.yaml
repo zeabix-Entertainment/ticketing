@@ -3,8 +3,8 @@ name: deploy-ticketing-client
 
 on:
   push:
-    branches-ignore:
-      - master
+    branches:
+      - release 
     paths:
       - 'client/**'
     tags: 
