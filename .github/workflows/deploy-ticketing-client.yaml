@@ -33,7 +33,7 @@ jobs:
       - name: envsubst-action        
         uses: danielr1996/envsubst-action@1.1.0
         env:
-            TAG_VERSION: $TAG_VERSION_TEMP
+            TAG_VERSION: '${{env.TAG_VERSION_TEMP}}'
         with:
           input: client/deployment/client-depl.yaml
           output: client/deployment/client-depl-go.yaml
