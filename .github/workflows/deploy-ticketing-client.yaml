@@ -3,10 +3,10 @@ name: deploy-ticketing-client
 
 on:
   push:
-    branches:
-      - release 
-    paths:
-      - 'client/**'
+#   branches:
+#     - release 
+#   paths:
+#     - 'client/**'
     tags: 
       - 'v*.*.*'
 
