@@ -29,9 +29,8 @@ jobs:
     needs: build   
     steps:
       - uses: actions/checkout@v2 
-
-      - name: envsubst-action
-        run: echo "TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+      - run: echo "TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+      - name: envsubst-action        
         uses: danielr1996/envsubst-action@1.1.0
         env:
             TAG_VERSION: $TAG_VERSION_TEMP
