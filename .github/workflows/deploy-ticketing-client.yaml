@@ -1,32 +1,50 @@
-## kaitest1
+# kaitest1
 name: deploy-ticketing-client
 
 on:
   push:
-    branches:
+    branches-ignore:
       - master
     paths:
       - 'client/**'
+    tags: 
+      - 'v*.*.*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd client && docker build -t zeabixdockerrepo/ticketing-client .
+      - name: Set tag env
+        run: echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+      - run: cd client && docker build -t zeabixdockerrepo/ticketing-client:$TAG_VERSION .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push zeabixdockerrepo/ticketing-client
+      - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
 
   deploy-dev:
     runs-on: ubuntu-latest 
     needs: build   
-    steps: 
+    steps:
+      - uses: actions/checkout@v2 
+      - run: echo "TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+      - name: envsubst-action        
+        uses: danielr1996/envsubst-action@1.1.0
+        env:
+            TAG_VERSION: '${{env.TAG_VERSION_TEMP}}'
+        with:
+          input: client/deployment/client-depl.yaml
+          output: client/deployment/client-depl-go.yaml
+          
       - uses: azure/aks-set-context@v1
         with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
-          cluster-name: ${{ secrets.CLUSTER_NAME }}
-          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}      
-      - run: kubectl rollout restart deployment client-depl
+          creds: '${{ secrets.AZURE_CREDENTIALS_DEV }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME_DEV }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}  
+      - run: kubectl apply -f client/deployment/client-depl-go.yaml
+    
+          
+          
+          
