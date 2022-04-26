@@ -17,24 +17,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Set docker tag to git tag version if the workflow is triggered by push tag (for release candidate).
         if: "contains(github.ref, 'tags')"
         run: |
           echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
-          echo $TAG_VERSION >> release_candidate-tag.txt
-        uses: actions/upload-artifact@v3
-        with: 
-          name: code-coverage-report
-          path: release_candidate-tag.txt
+          echo $TAG_VERSION > release_candidate-tag.txt
+
       - name: Set docker tag to github.sha if the workflow is triggered by push branch (for feature branch).
         if: "contains(github.ref, 'feature')"
-        run: echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV 
+        run: |
+          echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
+          echo $TAG_VERSION > release_candidate-tag.txt
+           
       - run: cd client && docker build -t zeabixdockerrepo/ticketing-client:$TAG_VERSION .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
+ 
+      - uses: actions/upload-artifact@v3
+        with: 
+          name: code-coverage-report
+          path: release_candidate-tag.txt
 
   deploy:
     runs-on: ubuntu-latest 
