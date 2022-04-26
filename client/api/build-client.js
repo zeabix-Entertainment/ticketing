@@ -5,8 +5,7 @@ export default ({ req }) => {
     // We are on the server
 
     return axios.create({
-      baseURL:
-        'http://z-commerce-dev.zeabix.com/',
+      baseURL: process.env.baseURL,
       headers: req.headers,
     });
   } else {
