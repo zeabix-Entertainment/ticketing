@@ -36,5 +36,5 @@ jobs:
           resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}     
       - run: |  
           echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo $TAG_VERSION 
+          echo "$TAG_VERSION" 
           envsubst < client/deployment/client-depl.yaml | kubectl apply -f -
