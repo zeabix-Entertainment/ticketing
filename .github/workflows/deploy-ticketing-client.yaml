@@ -17,13 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set tag env
+      - name: Set tag env for release candidate
         if: "contains(github.ref, 'tags')"
         run: |
           echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
           echo $TAG_VERSION > release_candidate_tag.txt 
 
-      - name: Set tag env2
+      - name: Set tag env for feature branch
         if: "contains(github.ref, 'feature')"
         run: echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
  
@@ -34,7 +34,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
 
-      - name: Upload git tag version for release candidate.
+      - name: Upload git tag version for release candidate
         if: "contains(github.ref, 'tags')"
         uses: actions/upload-artifact@v3
         with:
