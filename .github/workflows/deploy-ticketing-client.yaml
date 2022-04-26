@@ -1,12 +1,12 @@
 ## kaitest1
-name: deploy-auth
+name: deploy-ticketing-client
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'auth/**'
+      - 'client/**'
 
 jobs:
   build:
@@ -17,14 +17,11 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: cd auth && docker build -t zeabixdockerrepo/auth .
-      - run: docker push zeabixdockerrepo/auth
-
-  deploy:
-    steps: 
+      - run: cd client && docker build -t zeabixdockerrepo/ticketing-client .
+      - run: docker push zeabixdockerrepo/ticketing-client
       - uses: azure/aks-set-context@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ secrets.CLUSTER_NAME }}
-          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}      
-      - run: kubectl rollout restart deployment auth-depl
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}   
+      - run: kubectl rollout restart deployment client-depl

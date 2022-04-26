@@ -1,12 +1,11 @@
-## kaitest1
-name: deploy-auth
+name: deploy-manifests
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'auth/**'
+      - 'infra/**'
 
 jobs:
   build:
@@ -17,14 +16,10 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: cd auth && docker build -t zeabixdockerrepo/auth .
-      - run: docker push zeabixdockerrepo/auth
-
-  deploy:
-    steps: 
       - uses: azure/aks-set-context@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ secrets.CLUSTER_NAME }}
           resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}      
-      - run: kubectl rollout restart deployment auth-depl
+
+      - run: kubectl apply -f infra/k8s && kubectl apply -f infra/k8s-prod
