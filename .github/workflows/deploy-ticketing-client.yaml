@@ -29,6 +29,11 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
+      - run: echo $TAG_VERSION > release_candidate_tag.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release_candidate_tag
+          path: release_candidate_tag.txt
 
   deploy:
     runs-on: ubuntu-latest 
