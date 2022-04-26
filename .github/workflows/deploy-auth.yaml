@@ -21,6 +21,7 @@ jobs:
       - run: docker push zeabixdockerrepo/auth
 
   deploy:
+    runs-on: ubuntu-latest
     steps: 
       - uses: azure/aks-set-context@v1
         with:
