@@ -6,7 +6,7 @@ export default ({ req }) => {
 
     return axios.create({
       baseURL:
-        'http://z-commerce-dev.zeabix.com/',
+        'http://z-commerce.zeabix.com/',
       headers: req.headers,
     });
   } else {
