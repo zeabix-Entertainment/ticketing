@@ -20,16 +20,24 @@ jobs:
       - name: Set tag env
         if: "contains(github.ref, 'tags')"
         run: echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+        
       - name: Set tag env2
         if: "contains(github.ref, 'feature')"
-        run: echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV 
+        run: |
+           echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
+           echo $TAG_VERSION > release_candidate_tag.txt 
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: output/test/code-coverage.html
+
       - run: cd client && docker build -t zeabixdockerrepo/ticketing-client:$TAG_VERSION .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
-      - run: echo $TAG_VERSION > release_candidate_tag.txt
+
       - uses: actions/upload-artifact@v3
         with:
           name: release_candidate_tag
