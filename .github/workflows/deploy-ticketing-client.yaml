@@ -128,7 +128,7 @@ jobs:
       - name: Production - use git tag as docker tag from downloaded artifact
         if: "contains(github.ref, 'master')"
         run: |
-          TAG_VERSION_TEMP=$(release_candidate_tag.txt)
+          TAG_VERSION_TEMP=$(cat release_candidate_tag/release_candidate_tag.txt)
 
       - name: envsubst-action        
         uses: danielr1996/envsubst-action@1.1.0
