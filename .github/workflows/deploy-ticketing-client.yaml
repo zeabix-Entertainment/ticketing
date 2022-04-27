@@ -52,7 +52,7 @@ jobs:
         env:
           AZURE_CREDENTIALS_TEMP: ${{ secrets.AZURE_CREDENTIALS_DEV }}
           CLUSTER_NAME_TEMP: ${{ secrets.CLUSTER_NAME_DEV }}
-          CLUSTER_RESOURCE_GROUP_TEMP: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}"
+          CLUSTER_RESOURCE_GROUP_TEMP: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
         run: |
           echo "TAG_VERSION_TEMP=${{ github.sha }}" >> $GITHUB_ENV
           echo "AZURE_CREDENTIALS_TEMP=${AZURE_CREDENTIALS_TEMP}" >> $GITHUB_ENV
