@@ -99,9 +99,9 @@ jobs:
         if: "contains(github.ref, 'tags')"
         uses: azure/aks-set-context@v1
         with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
-          cluster-name: ${{ secrets.CLUSTER_NAME }}
-          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}
+          creds: '${{ secrets.AZURE_CREDENTIALS_QA }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME_QA }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
 
       - name: Set KubeConfig for Master
         if: "contains(github.ref, 'master')"
