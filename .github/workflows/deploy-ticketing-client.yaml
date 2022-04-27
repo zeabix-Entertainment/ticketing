@@ -41,7 +41,8 @@ jobs:
           name: release_candidate_tag
           path: release_candidate_tag.txt
 
-  deploy-feature branch and release:
+
+  deploy-feature-branch-and-release:
     runs-on: ubuntu-latest 
     needs: build   
     steps:
