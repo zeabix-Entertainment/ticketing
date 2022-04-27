@@ -47,28 +47,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2 
 
-      - name: Feature branch - use SHA as docker tag from github.sha and set kubeconfig for dev cluster
+      - name: Feature branch - use SHA as docker tag from github.sha 
         if: "contains(github.ref, 'feature')" 
-        env:
-          AZURE_CREDENTIALS_TEMP: ${{ secrets.AZURE_CREDENTIALS_DEV }}
-          CLUSTER_NAME_TEMP: ${{ secrets.CLUSTER_NAME_DEV }}
-          CLUSTER_RESOURCE_GROUP_TEMP: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
         run: |
           echo "TAG_VERSION_TEMP=${{ github.sha }}" >> $GITHUB_ENV
-          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME_DEV }}" >> $GITHUB_ENV
-          echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}" >> $GITHUB_ENV
-          echo "AZURE_CREDENTIALS_TEMP='${{ secrets.AZURE_CREDENTIALS_DEV }}'" >> $GITHUB_ENV
+       #  echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME_DEV }}" >> $GITHUB_ENV
+       #  echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}" >> $GITHUB_ENV
+       #  echo "AZURE_CREDENTIALS_TEMP=${{ secrets.AZURE_CREDENTIALS_DEV }}" >> $GITHUB_ENV
        #  echo "::set-env name=AZURE_CREDENTIALS_TEMP::$AZURE_CREDENTIALS_TEMP"
        #  echo "::set-env name=CLUSTER_NAME_TEMP::$CLUSTER_NAME_TEMP"
        #  echo "::set-env name=CLUSTER_RESOURCE_GROUP_TEMP::$CLUSTER_RESOURCE_GROUP_TEMP"
       
-      - name: Release candidate - use git tag as docker tag from github.ref and set kubeconfig for QA cluster
+      - name: Release candidate - use git tag as docker tag from github.ref
         if: "contains(github.ref, 'tags')"
         run: |
-          echo "TAG_VERSION_TEMP=${{ github.sha }}" >> $GITHUB_ENV
-          echo "AZURE_CREDENTIALS_TEMP="${{ secrets.AZURE_CREDENTIALS }}"" >> $GITHUB_ENV
-          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME }}" >> $GITHUB_ENV
-          echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP }}" >> $GITHUB_ENV
+          echo "TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
 
       - name: Production - download git tag saved in artifact
         if: "contains(github.ref, 'master')" 
@@ -76,14 +69,10 @@ jobs:
         with:
           name: release_candidate_tag
         
-      - name: Production - use git tag as docker tag from downloaded artifact and set kubeconfig for Prod cluster
+      - name: Production - use git tag as docker tag from downloaded artifact
         if: "contains(github.ref, 'master')"
         run: |
           TAG_VERSION_TEMP=$(release_candidate_tag.txt)
-          echo "TAG_VERSION_TEMP" >> $GITHUB_ENV
-          echo "AZURE_CREDENTIALS_TEMP=${{ secrets.AZURE_CREDENTIALS }}" >> $GITHUB_ENV
-          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME }}" >> $GITHUB_ENV
-          echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP }}" >> $GITHUB_ENV
 
       - name: envsubst-action        
         uses: danielr1996/envsubst-action@1.1.0
@@ -93,11 +82,30 @@ jobs:
           input: client/deployment/client-depl.yaml
           output: client/deployment/client-depl-go.yaml
           
-      - uses: azure/aks-set-context@v1
+      - name: Set KubeConfig for feature branch
+        if: "contains(github.ref, 'feature')"
+        uses: azure/aks-set-context@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS_DEV }}'
-          cluster-name: ${{ env.CLUSTER_NAME_TEMP }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP_TEMP }}  
+          cluster-name: ${{ secrets.CLUSTER_NAME_DEV }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
+      
+      - name: Set KubeConfig for Release
+        if: "contains(github.ref, 'tags')"
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}
+
+      - name: Set KubeConfig for Master
+        if: "contains(github.ref, 'master')"
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}
+
 
       - run: kubectl apply -f client/deployment/client-depl-go.yaml
     
