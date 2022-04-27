@@ -49,11 +49,15 @@ jobs:
 
       - name: Feature branch - use SHA as docker tag from github.sha and set kubeconfig for dev cluster
         if: "contains(github.ref, 'feature')" 
+        env:
+          AZURE_CREDENTIALS_TEMP: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+          CLUSTER_NAME_TEMP: ${{ secrets.CLUSTER_NAME_DEV }}
+          CLUSTER_RESOURCE_GROUP_TEMP: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}"
         run: |
           echo "TAG_VERSION_TEMP=${{ github.sha }}" >> $GITHUB_ENV
-          echo "AZURE_CREDENTIALS_TEMP=${{ secrets.AZURE_CREDENTIALS_DEV }}" >> $GITHUB_ENV
-          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME_DEV }}" >> $GITHUB_ENV
-          echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}" >> $GITHUB_ENV
+        #  echo "AZURE_CREDENTIALS_TEMP=${{ secrets.AZURE_CREDENTIALS_DEV }}" >> $GITHUB_ENV
+        #  echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME_DEV }}" >> $GITHUB_ENV
+        #  echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}" >> $GITHUB_ENV
       
       - name: Release candidate - use git tag as docker tag from github.ref and set kubeconfig for QA cluster
         if: "contains(github.ref, 'tags')"
