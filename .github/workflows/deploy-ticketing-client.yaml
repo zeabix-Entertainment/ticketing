@@ -119,6 +119,8 @@ jobs:
         with:
           workflow: deploy-ticketing-client.yaml
           workflow_conclusion: success
+      - run: ls -al
+      - run: unzip release_candidate_tag.txt
         
       - name: Production - use git tag as docker tag from downloaded artifact
         if: "contains(github.ref, 'master')"
