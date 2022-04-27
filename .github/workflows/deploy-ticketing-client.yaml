@@ -120,6 +120,7 @@ jobs:
           workflow: deploy-ticketing-client.yaml
           workflow_conclusion: success
       - run: ls -al
+      
       - uses: montudor/action-zip@v1
         with:
           args: unzip -qq release_candidate_tag.txt.zip -d release_candidate_tag
