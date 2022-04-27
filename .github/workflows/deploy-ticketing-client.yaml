@@ -55,9 +55,10 @@ jobs:
           CLUSTER_RESOURCE_GROUP_TEMP: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
         run: |
           echo "TAG_VERSION_TEMP=${{ github.sha }}" >> $GITHUB_ENV
-           echo "::set-env name=AZURE_CREDENTIALS_TEMP::$AZURE_CREDENTIALS_TEMP"
-           echo "::set-env name=CLUSTER_NAME_TEMP::$CLUSTER_NAME_TEMP"
-           echo "::set-env name=CLUSTER_RESOURCE_GROUP_TEMP::$CLUSTER_RESOURCE_GROUP_TEMP"
+          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME }}" >> $GITHUB_ENV
+       #  echo "::set-env name=AZURE_CREDENTIALS_TEMP::$AZURE_CREDENTIALS_TEMP"
+       #  echo "::set-env name=CLUSTER_NAME_TEMP::$CLUSTER_NAME_TEMP"
+       #  echo "::set-env name=CLUSTER_RESOURCE_GROUP_TEMP::$CLUSTER_RESOURCE_GROUP_TEMP"
       
       - name: Release candidate - use git tag as docker tag from github.ref and set kubeconfig for QA cluster
         if: "contains(github.ref, 'tags')"
