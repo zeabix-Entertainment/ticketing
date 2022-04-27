@@ -20,8 +20,12 @@ jobs:
       - name: Set tag env for release candidate
         if: "contains(github.ref, 'tags')"
         run: |
-          echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
-          echo $TAG_VERSION > release_candidate_tag.txt 
+          echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "$TAG_VERSION"
+          echo ${TAG_VERSION}
+          echo ${GITHUB_REF#refs/*/}
+          echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
+          cat release_candidate_tag.txt
 
       - name: Set tag env for feature branch
         if: "contains(github.ref, 'feature')"
@@ -115,17 +119,22 @@ jobs:
     runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v2 
-      - name: Production - download git tag saved in artifact
-        if: "contains(github.ref, 'master')" 
-        uses: actions/download-artifact@v3
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
-          name: release_candidate_tag
-        
+          workflow: deploy-ticketing-client.yaml
+          workflow_conclusion: success
+      - run: cd release_candidate_tag && ls -al && cat release_candidate_tag.txt
+
+     # - uses: montudor/action-zip@v1
+     #   with:
+     #     args: unzip -qq release_candidate_tag.txt.zip -d release_candidate_tag
+            
       - name: Production - use git tag as docker tag from downloaded artifact
         if: "contains(github.ref, 'master')"
         run: |
-          TAG_VERSION_TEMP=$(release_candidate_tag.txt)
-
+          echo "TAG_VERSION_TEMP=$(cat release_candidate_tag/release_candidate_tag.txt)"  >> $GITHUB_ENV
+    
       - name: envsubst-action        
         uses: danielr1996/envsubst-action@1.1.0
         env:
