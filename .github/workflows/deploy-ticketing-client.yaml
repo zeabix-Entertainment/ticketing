@@ -41,7 +41,8 @@ jobs:
           name: release_candidate_tag
           path: release_candidate_tag.txt
 
-  deploy:
+
+  deploy-feature-branch-and-release:
     runs-on: ubuntu-latest 
     needs: build   
     steps:
@@ -108,7 +109,39 @@ jobs:
 
 
       - run: kubectl apply -f client/deployment/client-depl-go.yaml
-    
-          
+
+  deploy-prod:
+    if: "contains(github.ref, 'master')"  
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v2 
+      - name: Production - download git tag saved in artifact
+        if: "contains(github.ref, 'master')" 
+        uses: actions/download-artifact@v3
+        with:
+          name: release_candidate_tag
+        
+      - name: Production - use git tag as docker tag from downloaded artifact
+        if: "contains(github.ref, 'master')"
+        run: |
+          TAG_VERSION_TEMP=$(release_candidate_tag.txt)
+
+      - name: envsubst-action        
+        uses: danielr1996/envsubst-action@1.1.0
+        env:
+            TAG_VERSION: '${{env.TAG_VERSION_TEMP}}'
+        with:
+          input: client/deployment/client-depl.yaml
+          output: client/deployment/client-depl-go.yaml
+
+      - name: Set KubeConfig for Master
+        if: "contains(github.ref, 'master')"
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}
+
+      - run: kubectl apply -f client/deployment/client-depl-go.yaml
           
           
