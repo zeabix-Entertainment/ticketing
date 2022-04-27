@@ -46,7 +46,38 @@ jobs:
     needs: build   
     steps:
       - uses: actions/checkout@v2 
-      - run: echo "TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV 
+
+      - name: Feature branch - use SHA as docker tag from github.sha and set kubeconfig for dev cluster
+        if: "contains(github.ref, 'feature')" 
+        run: |
+          echo "TAG_VERSION_TEMP=${{ github.sha }}" >> $GITHUB_ENV
+          echo "AZURE_CREDENTIALS_TEMP=${{ secrets.AZURE_CREDENTIALS_DEV }}" >> $GITHUB_ENV
+          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME_DEV }}" >> $GITHUB_ENV
+          echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}" >> $GITHUB_ENV
+      
+      - name: Release candidate - use git tag as docker tag from github.ref and set kubeconfig for QA cluster
+        if: "contains(github.ref, 'tags')"
+        run: |
+          echo "TAG_VERSION_TEMP=${{ github.sha }}" >> $GITHUB_ENV
+          echo "AZURE_CREDENTIALS_TEMP=${{ secrets.AZURE_CREDENTIALS }}" >> $GITHUB_ENV
+          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME }}" >> $GITHUB_ENV
+          echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP }}" >> $GITHUB_ENV
+
+      - name: Production - download git tag saved in artifact
+        if: "contains(github.ref, 'master')" 
+        uses: actions/download-artifact@v3
+        with:
+          name: release_candidate_tag
+        
+      - name: Production - use git tag as docker tag from downloaded artifact and set kubeconfig for Prod cluster
+        if: "contains(github.ref, 'master')"
+        run: |
+          TAG_VERSION_TEMP=$(release_candidate_tag.txt)
+          echo "TAG_VERSION_TEMP" >> $GITHUB_ENV
+          echo "AZURE_CREDENTIALS_TEMP=${{ secrets.AZURE_CREDENTIALS }}" >> $GITHUB_ENV
+          echo "CLUSTER_NAME_TEMP=${{ secrets.CLUSTER_NAME }}" >> $GITHUB_ENV
+          echo "CLUSTER_RESOURCE_GROUP_TEMP=${{ secrets.CLUSTER_RESOURCE_GROUP }}" >> $GITHUB_ENV
+
       - name: envsubst-action        
         uses: danielr1996/envsubst-action@1.1.0
         env:
@@ -57,9 +88,10 @@ jobs:
           
       - uses: azure/aks-set-context@v1
         with:
-          creds: '${{ secrets.AZURE_CREDENTIALS_DEV }}'
-          cluster-name: ${{ secrets.CLUSTER_NAME_DEV }}
-          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}  
+          creds: '${{ env.AZURE_CREDENTIALS_TEMP }}'
+          cluster-name: ${{ env.CLUSTER_NAME_TEMP }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP_DEV }}  
+
       - run: kubectl apply -f client/deployment/client-depl-go.yaml
     
           
