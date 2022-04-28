@@ -43,6 +43,8 @@ jobs:
           fi
           echo "::set-output name=docker_tag::${TAG_VERSION}"
           echo "$TAG_VERSION"
+          export kai=kai
+          echo "$kai"
 
           
 
