@@ -24,7 +24,7 @@ on:
         value: ${{jobs.build.outputs.docker_tag }}
       env_flag:
         description: "env_flag"
-        value: ${{inputs.env_flag}}
+        value: ${{ steps.set_docker_tag.outputs.env_flag }}
     
 jobs:
   build:
@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       docker_tag: ${{ steps.set_docker_tag.outputs.docker_tag }}
+      env_flag: ${{ steps.set_docker_tag.outputs.env_flag }}
     steps:
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
@@ -53,6 +54,8 @@ jobs:
             cat release_candidate_tag.txt
           fi
           echo "::set-output name=docker_tag::$TAG_VERSION_TEMP"
+          echo "::set-output name=env_flag::${{inputs.env_flag}}"
+         
           echo "$TAG_VERSION"
           export kai=kai
           echo "$kai"
