@@ -42,6 +42,13 @@ jobs:
             cat release_candidate_tag.txt
           fi
           echo "::set-output name=docker_tag::${TAG_VERSION}"
+          echo ${TAG_VERSION}
+           echo $TAG_VERSION
+            echo ${{TAG_VERSION}}
+            echo "$TAG_VERSION"
+            echo '$TAG_VERSION'
+
+          
 
       - name: Build Docker Image with proper tag. 
         run:  cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
