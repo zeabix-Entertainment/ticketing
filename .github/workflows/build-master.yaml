@@ -33,7 +33,8 @@ jobs:
           if [[ ${{github.ref}} == *"feature"* ]]
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
-
+            export TAG_VERSION_TEMP=${{ github.sha }}
+          
           elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
             echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
@@ -41,10 +42,11 @@ jobs:
             echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
             cat release_candidate_tag.txt
           fi
-          echo "::set-output name=docker_tag::${TAG_VERSION}"
+          echo "::set-output name=docker_tag::${TAG_VERSION_TEMP}"
           echo "$TAG_VERSION"
           export kai=kai
           echo "$kai"
+          echo "$TAG_VERSION_TEMP"
 
           
 
