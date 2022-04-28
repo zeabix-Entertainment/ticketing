@@ -27,6 +27,7 @@ jobs:
         ENV_TARGET_AKS_CRED: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_NAME: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP: NOT_DEFINED
+        
     
       run: |
         echo "$ENV_FLAG"
