@@ -22,18 +22,18 @@ jobs:
       run: |
         if [[ ${{github.ref}} == *"feature"* ]]
           then
-            echo "ENV_FLAG=DEV" >> $GITHUB_ENV
+            ENV_FLAG=DEV
           
         elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
-           echo "ENV_FLAG=QA" >> $GITHUB_ENV
+           ENV_FLAG=QA
 
         elif [[ ${{github.ref}} == *"master"* ]]  
           then   
-           echo "ENV_FLAG=PROD" >> $GITHUB_ENV 
+           ENV_FLAG=PROD
         fi
 
-        
+
         echo "$ENV_FLAG"
         ENV_FLAG=new_one
         echo "$ENV_FLAG"
@@ -43,7 +43,7 @@ jobs:
     with:
       app_name: ticketing-client
       app_dir: client
-      ENV_FLAG: 
+      ENV_FLAG: $ENV_FLAG
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
