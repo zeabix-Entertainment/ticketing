@@ -10,6 +10,9 @@ on:
       app_dir:
         required: true
         type: string
+      env_flag:
+        required: true
+        type: string
     secrets:
       docker_username:
         required: true
