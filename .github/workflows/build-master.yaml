@@ -18,7 +18,7 @@ on:
     outputs:
       docker_tag:
         description: "docker_tag for further deployment"
-        value: ${{ jobs.build.outputs.docker_tag }}
+        value: ${{jobs.build.steps.set_docker_tag.outputs.docker_tag }}
     
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
             echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
             cat release_candidate_tag.txt
           fi
-          echo "::set-output name=docker_tag::$TAG_VERSIOM"
+          echo "::set-output name=docker_tag::${TAG_VERSION}"
 
       - name: Build Docker Image with proper tag. 
         run:  cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
