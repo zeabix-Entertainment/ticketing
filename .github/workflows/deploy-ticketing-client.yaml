@@ -27,7 +27,7 @@ jobs:
         ENV_TARGET_AKS_CRED: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_NAME: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP: NOT_DEFINED
-        
+
     
       run: |
         echo "$ENV_FLAG"
@@ -72,8 +72,10 @@ jobs:
       app_dir: client
       env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
     secrets:
-      docker_username: ${{ secrets.DOCKER_USERNAME }}
-      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+    #  docker_username: ${{ secrets.DOCKER_USERNAME }}l
+    #  docker_password: ${{ secrets.DOCKER_PASSWORD }}
+       docker_username: "kamonwat.s@zeabix.com"
+       docker_password: "##1Q2w3e4r##"
 
   deploy:
     needs: build
