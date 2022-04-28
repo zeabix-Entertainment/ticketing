@@ -21,6 +21,12 @@ on:
         required: true
       docker_password:
         required: true
+      aks_cred:
+        required: true
+      aks_cluster_name:
+        required: true
+      aks_rg_name:
+        required: true
 jobs:
 
   deploy:
