@@ -44,14 +44,12 @@ jobs:
     
   build:
     needs: Evironment_Preperation
-    outputs: 
-      env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
     uses: ./.github/workflows/build-master.yaml
     with:
       app_name: ticketing-client
       app_dir: client
       env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
-    secrets:
+    secret:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -62,7 +60,7 @@ jobs:
       app_name: ticketing-client
       app_dir: client
       docker_tag: ${{needs.build.outputs.docker_tag}}
-      env_flag: ${{needs.build.needs.Evironment_Preperation.outputs.env_flag}}
+      env_flag:   ${{needs.build.outputs.env_flag}}
 
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
