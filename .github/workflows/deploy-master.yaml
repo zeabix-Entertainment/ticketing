@@ -39,8 +39,7 @@ jobs:
           echo ${{inputs.app_dir}}
           echo ${{inputs.docker_tag}}
           echo ${{inputs.env_flag}}
-            - name: envsubst-action        
-
+    
       - name: Prepare deployment manifest file
         uses: danielr1996/envsubst-action@1.1.0
         env:
