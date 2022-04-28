@@ -21,3 +21,14 @@ jobs:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy-master.yaml
+    with:
+      app_name: ticketing-client
+      app_dir: client
+      docker_tag: ${{needs.build.output.docker_tag}}
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
