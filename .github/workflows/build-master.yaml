@@ -42,7 +42,7 @@ jobs:
             cat release_candidate_tag.txt
           fi
           echo "::set-output name=docker_tag::${TAG_VERSION}"
-       
+           echo "$TAG_VERSION"
 
           
 
