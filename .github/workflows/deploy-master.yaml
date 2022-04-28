@@ -28,6 +28,6 @@ jobs:
       - uses: actions/checkout@v2 
       - run: |
           echo ${{inputs.app_name}}
-          echo ${{inputs.dir_name}}
+          echo ${{inputs.app_dir}}
           echo ${{inputs.docker_tag}}
       
