@@ -20,6 +20,7 @@ jobs:
     steps:
     - name: Detect Environment
       run: |
+        echo "$ENV_FLAG"
         if [[ ${{github.ref}} == *"feature"* ]]
           then
            ENV_FLAG=DEV
