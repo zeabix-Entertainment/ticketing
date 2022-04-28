@@ -21,6 +21,7 @@ jobs:
       id: detect_env
       env:
         ENV_FLAG: NOT_DEFINED
+    
       run: |
         echo "$ENV_FLAG"
         if [[ ${{github.ref}} == *"feature"* ]]
@@ -50,7 +51,8 @@ jobs:
       app_dir: client
       env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
     secrets:
-      docker_username: ${{ secrets.DOCKER_USERNAME }}
+ #    docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_username: "dfsdfds"
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   deploy:
@@ -65,4 +67,8 @@ jobs:
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
+      creds: '${{ secrets.AZURE_CREDENTIALS_QA }}'
+      cluster-name: ${{ secrets.CLUSTER_NAME_QA }}
+      resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
 
