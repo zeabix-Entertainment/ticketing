@@ -22,6 +22,9 @@ on:
       docker_tag:
         description: "docker_tag for further deployment stage"
         value: ${{jobs.build.outputs.docker_tag }}
+      env_flag:
+        description: "env_flag"
+        value: ${{inputs.env_flag}}
     
 jobs:
   build:
