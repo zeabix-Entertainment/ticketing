@@ -42,19 +42,25 @@ jobs:
             cat release_candidate_tag.txt
           fi
           echo "::set-output name=docker_tag::${TAG_VERSION}"
-           echo "$TAG_VERSION"
+          echo "$TAG_VERSION"
 
           
 
       - name: Build Docker Image with proper tag. 
-        run:  cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
+        run:  | 
+          cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
+          echo "$TAG_VERSION"
+
       - name: Docker Registry login
         run:  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        
         env:
           DOCKER_USERNAME: ${{ secrets.docker_username }}
           DOCKER_PASSWORD: ${{ secrets.docker_password }}
       - name: Docker push
-        run:  docker push zeabixdockerrepo/${{inputs.app_name}}:$TAG_VERSION
+        run:  |
+          docker push zeabixdockerrepo/${{inputs.app_name}}:$TAG_VERSION
+          echo "$TAG_VERSION"
 
       - name: Upload git tag version for release candidate
         if: "contains(github.ref, 'tags')"
