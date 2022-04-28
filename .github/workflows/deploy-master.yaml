@@ -21,7 +21,6 @@ on:
         required: true
       docker_password:
         required: true
-
 jobs:
 
   deploy:
