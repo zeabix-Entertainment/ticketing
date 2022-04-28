@@ -21,8 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set tag env for release candidate
-        if: "contains(github.ref, 'tags')"
+      - if: "contains(github.ref, 'tags')"
+        name: Set tag env for release candidate
+    #   if: "contains(github.ref, 'tags')"
         run: |
           echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
           echo ${GITHUB_REF#refs/*/}
