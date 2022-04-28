@@ -10,8 +10,19 @@ on:
 #     - 'client/**'
     tags: 
       - 'v*.*.*'
+env:
+  ENV_FLAG: NOT_DEFINED
+    
 
 jobs:
+  Evironment Preperation:
+    runs-on: ubuntu-latest 
+    steps:
+    - run: |
+        echo "$ENV_FLAG"
+        ENV_FLAG=new_one
+        echo "$ENV_FLAG"
+    
   build:
     uses: ./.github/workflows/build-master.yaml
     with:
