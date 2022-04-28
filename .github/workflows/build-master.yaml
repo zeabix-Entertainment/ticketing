@@ -19,25 +19,25 @@ on:
 
 jobs:
   build:
-    name: build-${{github.ref}}
+    name: ${GITHUB_REF#refs/*/}
     if: "!contains(github.ref, 'master')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
         run: |
-          if [[ ${github.ref} == *"feature"* ]]
+          if [[ ${{github.ref}} == *"feature"* ]]
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
 
-          elif [[ ${github.ref} == *"tag"* ]]   
+          elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
             echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
             echo ${GITHUB_REF#refs/*/}            
             echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
             cat release_candidate_tag.txt
           fi
- 
+
       - name: Build Docker Image with proper tag. 
         run:  cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
       - name: Docker login
