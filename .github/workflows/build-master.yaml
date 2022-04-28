@@ -15,11 +15,14 @@ on:
         required: true
       docker_password:
         required: true
-
-
+    outputs:
+      docker_tag:
+        description: "docker_tag for further deployment"
+        value: ${{ jobs.build.outputs.docker_tag }}
+    
 jobs:
   build:
-    name: ${GITHUB_REF#refs/*/}
+    name: ${{github.ref}}
     if: "!contains(github.ref, 'master')"
     runs-on: ubuntu-latest
     steps:
@@ -37,10 +40,13 @@ jobs:
             echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
             cat release_candidate_tag.txt
           fi
+        outputs:
+          docker_tag: ${{env.TAG_VERSION}}
+
 
       - name: Build Docker Image with proper tag. 
         run:  cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
-      - name: Docker login
+      - name: Docker Registry login
         run:  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.docker_username }}
