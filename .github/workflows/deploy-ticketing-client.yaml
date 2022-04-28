@@ -19,6 +19,8 @@ jobs:
       env_cred: ${{steps.detect_env.outputs.env_cred}}
       env_cluster_name: ${{steps.detect_env.outputs.env_cluster_name}}
       env_rg_name: ${{steps.detect_env.outputs.env_rg_name}}
+      env_docker_user: ${{steps.detect_env.outputs.env_docker_user}}
+      env_docker_pwd: ${{steps.detect_env.outputs.env_docker_pwd}}
     steps:
     - name: Detect Environment
       id: detect_env
@@ -27,6 +29,8 @@ jobs:
         ENV_TARGET_AKS_CRED: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_NAME: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP: NOT_DEFINED
+        ENV_TARGET_DOCKER_USER: NOT_DEFINED
+        ENV_TARGET_DOCKER_PWD: NOT_DEFINED
 
     
       run: |
@@ -37,6 +41,8 @@ jobs:
          ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS_DEV }}'
          ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME_DEV }}
          ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
+         ENV_TARGET_DOCKER_USER=${{ secrets.DOCKER_USERNAME }}
+         ENV_TARGET_DOCKER_PWD=${{ secrets.DOCKER_PASSWORD }}
           
         elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
@@ -58,6 +64,8 @@ jobs:
         echo "::set-output name=env_cred::$ENV_TARGET_AKS_CRED"
         echo "::set-output name=env_cluster_name::$ENV_TARGET_AKS_CLUSTER_NAME"
         echo "::set-output name=env_rg_name::$ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP"
+        echo "::set-output name=env_docker_user::$ENV_TARGET_DOCKER_USER"
+        echo "::set-output name=env_docker_pwd::$ENV_TARGET_DOCKER_PWD"
 
 
         echo "$ENV_FLAG"
@@ -72,10 +80,10 @@ jobs:
       app_dir: client
       env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
     secrets:
-    #  docker_username: ${{ secrets.DOCKER_USERNAME }}l
+    #  docker_username: ${{ secrets.DOCKER_USERNAME }}
     #  docker_password: ${{ secrets.DOCKER_PASSWORD }}
-       docker_username: "zeabixdockerrepo"
-       docker_password: "##1Q2w3e4r##"
+       docker_username: ${{needs.Evironment_Preperation.outputs.env_docker_user}}
+       docker_password: ${{needs.Evironment_Preperation.outputs.env_docker_pwd}}
 
   deploy:
     needs: build
