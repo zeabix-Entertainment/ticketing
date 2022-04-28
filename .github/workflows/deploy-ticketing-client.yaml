@@ -56,8 +56,6 @@ jobs:
 
   deploy:
     needs: build
-    env:
-      CC: QA
     uses: ./.github/workflows/deploy-master.yaml
     with:
       app_name: ticketing-client
