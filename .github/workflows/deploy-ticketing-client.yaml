@@ -48,7 +48,7 @@ jobs:
     with:
       app_name: ticketing-client
       app_dir: client
-      ENV_FLAG: ${{needs.Evironment_Preperation.outputs.env_flag}}
+      env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
@@ -59,7 +59,9 @@ jobs:
     with:
       app_name: ticketing-client
       app_dir: client
-      docker_tag: ${{needs.build.needs.Evironment_Preperation.outputs.env_flag}}
+      docker_tag: ${{needs.build.outputs.docker_tag}}
+      env_flag: ${{needs.build.needs.Evironment_Preperation.outputs.env_flag}}
+
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}

@@ -13,6 +13,9 @@ on:
       docker_tag:
         required: true
         type: string
+      env_flag:
+        required: true
+        type: string
     secrets:
       docker_username:
         required: true
