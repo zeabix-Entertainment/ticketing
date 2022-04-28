@@ -49,7 +49,7 @@ jobs:
       app_name: ticketing-client
       app_dir: client
       env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
-    secret:
+    secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
