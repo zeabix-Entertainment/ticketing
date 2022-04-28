@@ -21,11 +21,11 @@ on:
         required: true
       docker_password:
         required: true
-      aks_cred:
+      creds:
         required: true
-      aks_cluster_name:
+      cluster-name:
         required: true
-      aks_rg_name:
+      resource-group:
         required: true
 jobs:
 
