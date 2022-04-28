@@ -19,8 +19,6 @@ jobs:
       env_cred: ${{steps.detect_env.outputs.env_cred}}
       env_cluster_name: ${{steps.detect_env.outputs.env_cluster_name}}
       env_rg_name: ${{steps.detect_env.outputs.env_rg_name}}
-      env_docker_user: ${{steps.detect_env.outputs.env_docker_user}}
-      env_docker_pwd: ${{steps.detect_env.outputs.env_docker_pwd}}
     steps:
     - name: Detect Environment
       id: detect_env
@@ -29,20 +27,15 @@ jobs:
         ENV_TARGET_AKS_CRED: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_NAME: NOT_DEFINED
         ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP: NOT_DEFINED
-        ENV_TARGET_DOCKER_USER: NOT_DEFINED
-        ENV_TARGET_DOCKER_PWD: NOT_DEFINED
-
     
       run: |
         echo "$ENV_FLAG"
         if [[ ${{github.ref}} == *"feature"* ]]
          then
-         ENV_FLAG="zeabixdockerrepo"
+         ENV_FLAG=DEV
          ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS_DEV }}'
          ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME_DEV }}
          ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
-         ENV_TARGET_DOCKER_USER=${{ secrets.DOCKER_USERNAME }}
-         ENV_TARGET_DOCKER_PWD=${{ secrets.DOCKER_PASSWORD }}
           
         elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
@@ -63,10 +56,7 @@ jobs:
         echo "::set-output name=env_flag::$ENV_FLAG"
         echo "::set-output name=env_cred::$ENV_TARGET_AKS_CRED"
         echo "::set-output name=env_cluster_name::$ENV_TARGET_AKS_CLUSTER_NAME"
-        echo "::set-output name=env_rg_name::$ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP"
-        echo "::set-output name=env_docker_user::"zeabixdockerrepo""
-        echo "::set-output name=env_docker_pwd::"##1Q2w3e4r##""
-
+        echo "::set-output name=env_rg_name::ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP"
 
 
         echo "$ENV_FLAG"
@@ -79,15 +69,10 @@ jobs:
     with: 
       app_name: ticketing-client
       app_dir: client
-    # env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
-      env_flag: DEV
+      env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
     secrets:
-    #  docker_username: ${{ secrets.DOCKER_USERNAME }}
-    #  docker_password: ${{ secrets.DOCKER_PASSWORD }}
-       docker_username: ${{needs.Evironment_Preperation.outputs.env_docker_user}}
-       docker_password: ${{needs.Evironment_Preperation.outputs.env_docker_pwd}}
-    #   docker_username: ${{needs.Evironment_Preperation.outputs.env_flag}}
-    #   docker_password: "##1Q2w3e4r##"
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   deploy:
     needs: build
