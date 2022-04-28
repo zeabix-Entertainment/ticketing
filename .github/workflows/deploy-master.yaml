@@ -31,7 +31,7 @@ jobs:
 
   deploy:
     name: ${{github.ref}}
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest     
     steps:
       - uses: actions/checkout@v2 
       - run: |
@@ -39,4 +39,20 @@ jobs:
           echo ${{inputs.app_dir}}
           echo ${{inputs.docker_tag}}
           echo ${{inputs.env_flag}}
+            - name: envsubst-action        
+
+      - name: Prepare deployment manifest file
+        uses: danielr1996/envsubst-action@1.1.0
+        env:
+            TAG_VERSION: '${{inputs.env_flag}}'
+        with:
+          input: client/deployment/client-depl.yaml
+          output: client/deployment/client-depl-go.yaml
+
+      - name: Set KubeConfig
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.cred }}'
+          cluster-name: ${{ secrets.cluster-name }}
+          resource-group: ${{ secrets.resource-group }}
       
