@@ -35,7 +35,7 @@ jobs:
       - name: Set tag env for docker tag
         id: set_docker_tag
         run: |
-          if [[ ${{inputs.env_flag}} == "DEV" ]]
+          if [[ ${{inputs.env_flag}} == "DEV" ]] 
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
             export TAG_VERSION_TEMP=${{ github.sha }}
