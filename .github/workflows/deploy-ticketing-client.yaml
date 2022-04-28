@@ -16,6 +16,7 @@ jobs:
     uses: ./.github/workflows/build-master.yaml
     with:
       app_name: ticketing-client
+      app_dir: client
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
