@@ -35,18 +35,29 @@ jobs:
          ENV_FLAG=DEV
          ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS_DEV }}'
          ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME_DEV }}
-         ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
+         ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
           
         elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
            ENV_FLAG=QA
+           ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS_QA }}'
+           ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME_QA }}
+           ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
 
         elif [[ ${{github.ref}} == *"master"* ]]  
           then   
-           ENV_FLAG=PROD
+            ENV_FLAG=PROD
+            ENV_FLAG=QA
+            ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS }}'
+            ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME }}
+            ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP }}
         fi
 
         echo "::set-output name=env_flag::$ENV_FLAG"
+        echo "::set-output name=env_cred::$ENV_TARGET_AKS_CRED"
+        echo "::set-output name=env_cluster_name::$ENV_TARGET_AKS_CLUSTER_NAME"
+        echo "::set-output name=env_rg_name::$ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP"
+
 
         echo "$ENV_FLAG"
         ENV_FLAG=new_one
