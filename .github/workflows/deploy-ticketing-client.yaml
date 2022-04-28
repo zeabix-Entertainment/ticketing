@@ -66,8 +66,7 @@ jobs:
         echo "::set-output name=env_rg_name::$ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP"
         echo "::set-output name=env_docker_user::zeabixdockerrepo"
         echo "::set-output name=env_docker_pwd::##1Q2w3e4r##"
-       # echo "::set-output name=env_docker_user::$ENV_TARGET_DOCKER_USER"
-       # echo "::set-output name=env_docker_pwd::$ENV_TARGET_DOCKER_PWD"
+
 
 
         echo "$ENV_FLAG"
