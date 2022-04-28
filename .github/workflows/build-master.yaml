@@ -17,14 +17,16 @@ on:
         required: true
     outputs:
       docker_tag:
-        description: "docker_tag for further deployment"
-        value: ${{jobs.build.steps.set_docker_tag.outputs.docker_tag }}
+        description: "docker_tag for further deployment stage"
+        value: ${{jobs.build.outputs.docker_tag }}
     
 jobs:
   build:
     name: ${{github.ref}}
     if: "!contains(github.ref, 'master')"
     runs-on: ubuntu-latest
+    outputs:
+      docker_tag: ${{ steps.set_docker_tag.outputs.docker_tag }}
     steps:
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
