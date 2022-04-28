@@ -55,3 +55,12 @@ jobs:
           cluster-name: ${{ secrets.cluster-name }}
           resource-group: ${{ secrets.resource-group }}
       
+      - name: Docker Registry login
+        run:  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.docker_username }}
+          DOCKER_PASSWORD: ${{ secrets.docker_password }}
+
+      - name: Apply kubectl to deploy new app container to kubernetes cluster
+        run: kubectl apply -f client/deployment/client-depl-go.yaml
+      
