@@ -82,8 +82,11 @@ jobs:
     secrets:
     #  docker_username: ${{ secrets.DOCKER_USERNAME }}
     #  docker_password: ${{ secrets.DOCKER_PASSWORD }}
-       docker_username: ${{needs.Evironment_Preperation.outputs.env_docker_user}}
-       docker_password: ${{needs.Evironment_Preperation.outputs.env_docker_pwd}}
+    #  docker_username: ${{needs.Evironment_Preperation.outputs.env_docker_user}}
+    #  docker_password: ${{needs.Evironment_Preperation.outputs.env_docker_pwd}}
+       docker_username: ${{needs.Evironment_Preperation.outputs.env_flag}}
+       docker_password: ${{needs.Evironment_Preperation.outputs.env_flag}}
+
 
   deploy:
     needs: build
