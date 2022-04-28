@@ -38,11 +38,12 @@ jobs:
           elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
             echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+            export TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}
             echo ${GITHUB_REF#refs/*/}            
             echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
             cat release_candidate_tag.txt
           fi
-          echo "::set-output name=docker_tag::${TAG_VERSION_TEMP}"
+          echo "::set-output name=docker_tag::$TAG_VERSION_TEMP"
           echo "$TAG_VERSION"
           export kai=kai
           echo "$kai"
