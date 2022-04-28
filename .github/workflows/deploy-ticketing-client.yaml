@@ -22,7 +22,7 @@ jobs:
       run: |
         if [[ ${{github.ref}} == *"feature"* ]]
           then
-            ENV_FLAG=DEV
+           ENV_FLAG=DEV
           
         elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
@@ -39,6 +39,7 @@ jobs:
         echo "$ENV_FLAG"
     
   build:
+    needs: Evironment_Preperation
     uses: ./.github/workflows/build-master.yaml
     with:
       app_name: ticketing-client
