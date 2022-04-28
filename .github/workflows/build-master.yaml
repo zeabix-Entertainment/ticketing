@@ -21,9 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - if: "contains(github.ref, 'tags')"
-        name: Set tag env for release candidate
-    #   if: "contains(github.ref, 'tags')"
+      - name: Set tag env for release candidate
+        if: "contains(github.ref, 'tags')"
         run: |
           echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
           echo ${GITHUB_REF#refs/*/}
@@ -34,7 +33,7 @@ jobs:
         if: "contains(github.ref, 'feature')"
         run: echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
  
-      - run: cd client && docker build -t zeabixdockerrepo/${{inputs.app_name}}:$TAG_VERSION .
+      - run: cd client && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.docker_username }}
