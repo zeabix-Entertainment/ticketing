@@ -1,0 +1,42 @@
+# kaitest1
+name: build-master
+
+on:
+  workflow_call:
+    inputs:
+      APP_NAME:
+        required: true
+        type: string    
+
+jobs:
+  build:
+    name: build-${{github.ref}}
+    if: "!contains(github.ref, 'master')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set tag env for release candidate
+        if: "contains(github.ref, 'tags')"
+        run: |
+          echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo ${GITHUB_REF#refs/*/}
+          echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
+          cat release_candidate_tag.txt
+
+      - name: Set tag env for feature branch
+        if: "contains(github.ref, 'feature')"
+        run: echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
+ 
+      - run: cd client && docker build -t zeabixdockerrepo/$APP_NAME:$TAG_VERSION .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
+
+      - name: Upload git tag version for release candidate
+        if: "contains(github.ref, 'tags')"
+        uses: actions/upload-artifact@v3
+        with:
+          name: release_candidate_tag
+          path: release_candidate_tag.txt 
