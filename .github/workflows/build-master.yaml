@@ -33,7 +33,7 @@ jobs:
         if: "contains(github.ref, 'feature')"
         run: echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
  
-      - run: cd client && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${{TAG_VERSION}} .
+      - run: cd client && docker build -t zeabixdockerrepo/${{inputs.app_name}}:$TAG_VERSION .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.docker_username }}
