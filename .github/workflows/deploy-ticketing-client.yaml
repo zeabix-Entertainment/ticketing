@@ -10,20 +10,22 @@ on:
 #     - 'client/**'
     tags: 
       - 'v*.*.*'
-env:
-  ENV_FLAG: NOT_DEFINED
-    
 
 jobs:
   Evironment_Preperation:
     runs-on: ubuntu-latest 
+    outputs:
+      env_flag: ${{steps.detect_env.outputs.env_flag}}
     steps:
     - name: Detect Environment
+      id: detect_env
+      env:
+        ENV_FLAG: NOT_DEFINED
       run: |
         echo "$ENV_FLAG"
         if [[ ${{github.ref}} == *"feature"* ]]
-          then
-           ENV_FLAG=DEV
+         then
+         ENV_FLAG=DEV
           
         elif [[ ${{github.ref}} == *"tag"* ]]   
           then   
@@ -34,6 +36,7 @@ jobs:
            ENV_FLAG=PROD
         fi
 
+        echo "::set-output name=env_flag::$ENV_FLAG"
 
         echo "$ENV_FLAG"
         ENV_FLAG=new_one
@@ -45,7 +48,7 @@ jobs:
     with:
       app_name: ticketing-client
       app_dir: client
-      ENV_FLAG: "$ENV_FLAG"
+      ENV_FLAG: ${{needs.Evironment_Preperation.outputs.env_flag}}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
