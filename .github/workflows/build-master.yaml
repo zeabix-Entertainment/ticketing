@@ -24,7 +24,7 @@ jobs:
       - name: Set tag env for docker tag
    ##   if: "contains(github.ref, 'tags')"
         run: |
-          if [[ ${{github.ref}} == *"feature"* ]]
+          if [[ $github.ref == *"feature"* ]]
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
 
