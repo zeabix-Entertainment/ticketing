@@ -6,7 +6,13 @@ on:
     inputs:
       app_name:
         required: true
-        type: string    
+        type: string
+    secrets:
+      docker_username:
+        required: true
+      docker_password:
+        required: true
+
 
 jobs:
   build:
@@ -27,11 +33,11 @@ jobs:
         if: "contains(github.ref, 'feature')"
         run: echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
  
-      - run: cd client && docker build -t zeabixdockerrepo/${{inputs.app_name}}:$TAG_VERSION .
+      - run: cd client && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${{TAG_VERSION}} .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.docker_username }}
+          DOCKER_PASSWORD: ${{ secrets.docker_password }}
       - run: docker push zeabixdockerrepo/ticketing-client:$TAG_VERSION
 
       - name: Upload git tag version for release candidate
