@@ -24,7 +24,7 @@ on:
         value: ${{jobs.build.outputs.docker_tag }}
       env_flag:
         description: "env_flag"
-        value: ${{ steps.set_docker_tag.outputs.env_flag }}
+        value: ${{ jobs.build.outputs.env_flag }}
     
 jobs:
   build:
