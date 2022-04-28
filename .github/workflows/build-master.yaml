@@ -28,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
+        id: set_docker_tag
         run: |
           if [[ ${{github.ref}} == *"feature"* ]]
           then
@@ -40,9 +41,7 @@ jobs:
             echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
             cat release_candidate_tag.txt
           fi
-        outputs:
-          docker_tag: ${{env.TAG_VERSION}}
-
+          echo "::set-output name=docker_tag::$TAG_VERSIOM"
 
       - name: Build Docker Image with proper tag. 
         run:  cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
