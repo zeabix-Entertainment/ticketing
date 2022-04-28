@@ -15,7 +15,7 @@ jobs:
       app_dir:  client
       env_flag: DEV
     secrets:
-      docker_usernam: ${{ secrets.DOCKER_USERNAME }}
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
   deploy:

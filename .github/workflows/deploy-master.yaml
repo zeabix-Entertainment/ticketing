@@ -51,7 +51,7 @@ jobs:
       - name: Set KubeConfig
         uses: azure/aks-set-context@v1
         with:
-          creds: '${{ secrets.cred }}'
+          creds: '${{ secrets.creds }}'
           cluster-name: ${{ secrets.cluster-name }}
           resource-group: ${{ secrets.resource-group }}
       

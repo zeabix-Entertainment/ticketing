@@ -14,7 +14,7 @@ on:
         required: true
         type: string
     secrets:
-      docker_usernam:
+      docker_username:
         required: true
       docker_password:
         required: true
@@ -74,7 +74,7 @@ jobs:
         run:  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         
         env:
-          DOCKER_USERNAME: ${{ secrets.docker_usernam }}
+          DOCKER_USERNAME: ${{ secrets.docker_username }}
           DOCKER_PASSWORD: ${{ secrets.docker_password }}
       - name: Docker push
         run:  |
