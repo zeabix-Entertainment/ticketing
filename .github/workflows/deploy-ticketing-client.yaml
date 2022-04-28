@@ -46,7 +46,7 @@ jobs:
   build:
     needs: Evironment_Preperation
     uses: ./.github/workflows/build-master.yaml
-    with:
+    with: 
       app_name: ticketing-client
       app_dir: client
       env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
@@ -56,8 +56,6 @@ jobs:
 
   deploy:
     needs: build
-    env:
-      CC: QA 
     uses: ./.github/workflows/deploy-master.yaml
     with:
       app_name: ticketing-client
