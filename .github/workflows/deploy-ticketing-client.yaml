@@ -37,7 +37,7 @@ jobs:
         echo "$ENV_FLAG"
         if [[ ${{github.ref}} == *"feature"* ]]
          then
-         ENV_FLAG=DEV
+         ENV_FLAG="zeabixdockerrepo"
          ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS_DEV }}'
          ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME_DEV }}
          ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
@@ -79,13 +79,14 @@ jobs:
     with: 
       app_name: ticketing-client
       app_dir: client
-      env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
+    # env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
+      env_flag: DEV
     secrets:
     #  docker_username: ${{ secrets.DOCKER_USERNAME }}
     #  docker_password: ${{ secrets.DOCKER_PASSWORD }}
        docker_username: ${{needs.Evironment_Preperation.outputs.env_docker_user}}
        docker_password: ${{needs.Evironment_Preperation.outputs.env_docker_pwd}}
-    #   docker_username: "zeabixdockerrepo"
+    #   docker_username: ${{needs.Evironment_Preperation.outputs.env_flag}}
     #   docker_password: "##1Q2w3e4r##"
 
   deploy:
