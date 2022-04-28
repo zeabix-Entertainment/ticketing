@@ -15,7 +15,7 @@ env:
     
 
 jobs:
-  Evironment Preperation:
+  Evironment_Preperation:
     runs-on: ubuntu-latest 
     steps:
     - run: |
