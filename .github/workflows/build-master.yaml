@@ -72,7 +72,7 @@ jobs:
             echo $GITHUB_ENV
             export TAG_VERSION_TEMP=${{ github.sha }}
           
-          elif [[ ${{inputs.env_flag}} == "RELEASE" ]]   
+          elif [[ $APP_ENV == "RELEASE" ]]   
           then   
             echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
             export TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}
@@ -83,15 +83,12 @@ jobs:
           echo "::set-output name=docker_tag::$TAG_VERSION_TEMP"
           echo "::set-output name=env_flag::${{inputs.env_flag}}"
          
-          echo "$TAG_VERSION"
-          export kai=kai
-          echo "$kai"
           echo "$TAG_VERSION_TEMP"
           echo "$TAG_VERSION_TEMP"
 
       - name: Build Docker Image with proper tag. 
         run:  | 
-          cd ${{inputs.app_dir}} && docker build -t zeabixdockerrepo/${{inputs.app_name}}:${TAG_VERSION} .
+          cd $APP_DIR && docker build -t zeabixdockerrepo/$APP_NAME:${TAG_VERSION} .
           echo "$TAG_VERSION"
 
       - name: Docker Registry login
@@ -102,7 +99,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.docker_password }}
       - name: Docker push
         run:  |
-          docker push zeabixdockerrepo/${{inputs.app_name}}:$TAG_VERSION
+          docker push zeabixdockerrepo/$APP_NAME:$TAG_VERSION
           echo "$TAG_VERSION"
 
       - name: Upload git tag version for release candidate
