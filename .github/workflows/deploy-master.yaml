@@ -53,8 +53,8 @@ jobs:
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
 
-          echo "test1=${strarr[2]}/deployment/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
-          echo "test2=${strarr[2]}/deployment/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
+          echo "manifest_original=${strarr[2]}/deployment/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
+          echo "manifest_with_tag=${strarr[2]}/deployment/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2 
       - run: |
@@ -67,8 +67,8 @@ jobs:
         env:
             TAG_VERSION: '${{inputs.docker_tag}}'
         with:
-          input: ${{env.test1}}
-          output: ${{env.test2}}
+          input: ${{env.manifest_original}}
+          output: ${{env.manifest_with_tag}}
 
       - name: Set KubeConfig
         uses: azure/aks-set-context@v1
