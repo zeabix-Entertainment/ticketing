@@ -60,10 +60,10 @@ jobs:
       - name: Prepare deployment manifest file
         uses: danielr1996/envsubst-action@1.1.0
         env:
-            TAG_VERSION: '${{inputs.env_flag}}'
+            TAG_VERSION: '${{inputs.docker_tag}}'
         with:
-          input: client/deployment/client-depl.yaml
-          output: client/deployment/client-depl-go.yaml
+          input: $APP_DIR/deployment/$APP_DIR-depl.yaml
+          output: $APP_DIR/deployment/$APP_DIR-depl-go.yaml
 
       - name: Set KubeConfig
         uses: azure/aks-set-context@v1
@@ -79,5 +79,5 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.docker_password }}
 
       - name: Apply kubectl to deploy new app container to kubernetes cluster
-        run: kubectl apply -f client/deployment/client-depl-go.yaml
+        run: kubectl apply -f $APP_DIR/deployment/$APP_DIR-depl-go.yaml
       
