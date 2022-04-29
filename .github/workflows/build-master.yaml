@@ -4,15 +4,6 @@ name: build-master
 on:
   workflow_call:
     inputs:
-      app_name:
-        required: true
-        type: string
-      app_dir:
-        required: true
-        type: string
-      env_flag:
-        required: true
-        type: string
       workflow_name:
         required: true
         type: string
