@@ -16,6 +16,9 @@ on:
       env_flag:
         required: true
         type: string
+      workflow_name:
+        required: true
+        type: string
     secrets:
       docker_username:
         required: true
@@ -27,6 +30,9 @@ on:
         required: true
       resource-group:
         required: true
+env:
+  WORKFLOW_NAME: ${{inputs.workflow_name}}
+  
 jobs:
 
   deploy:
