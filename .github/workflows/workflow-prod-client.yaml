@@ -3,8 +3,8 @@ name: PROD_ticketing-client_client
 
 on:
   push:
-    tags: 
-      - 'v*.*.*'
+   branches:
+      - master
 
 jobs:
 
