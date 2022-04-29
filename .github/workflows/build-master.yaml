@@ -30,11 +30,6 @@ on:
         value: ${{ jobs.build.outputs.env_flag }}
 env:
   WORKFLOW_NAME: ${{inputs.workflow_name}}
-  APP_ENV: NOT_DEFINED
-  APP_DIR: NOT_DEFINED
-  APP_NAME: NOT_DEFINED
-
-
     
 jobs:
 
@@ -55,17 +50,7 @@ jobs:
           echo "::set-output name=app_env::${strarr[0]}"
           echo "::set-output name=app_dir::${strarr[1]}"
           echo "::set-output name=app_name::${strarr[2]}"
-          APP_ENV=${strarr[0]}
-          APP_DIR=${strarr[1]}
-          APP_NAME=${strarr[2]}
-          echo $env.APP_ENV 
-          echo $env.APP_DIR
-          echo $env.APP_NAME
-
- 
-   #    env:
-    #     WORKFLOW_NAME: ${{inputs.workflow_name}}
-
+      
 
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
@@ -73,10 +58,11 @@ jobs:
         run: |
           echo  ${{inputs.env_flag}}
 
-          echo $APP_ENV 
-          echo $APP_DIR
-          echo $APP_NAME
 
+          echo ${{ steps.Prepare.outputs.app_env }}  
+          echo ${{ steps.Prepare.outputs.app_dir }}  
+          echo ${{ steps.Prepare.outputs.app_name }} 
+          
           if [[ ${{inputs.env_flag}} == "DEV" ]] 
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
