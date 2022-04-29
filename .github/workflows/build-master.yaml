@@ -37,7 +37,9 @@ jobs:
       - name: Hello world
         id: Hello_world
         run: |
-          echo ${{inputs.workflow_name}}
+          echo $WORKFLOW_NAME
+        env:
+          WORKFLOW_NAME: ${{inputs.workflow_name}}
 
   build:
     name: ${{github.ref}}
