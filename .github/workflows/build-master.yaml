@@ -28,7 +28,7 @@ on:
 
     
 jobs:
-  Prepare:
+  Prepare build:
     runs-on: ubuntu-latest
     steps:
       - name: Hello world
@@ -39,6 +39,7 @@ jobs:
   build:
     name: ${{github.ref}}
     if: "!contains(github.ref, 'master')"
+    needs: Prepare
     runs-on: ubuntu-latest
     outputs:
       docker_tag: ${{ steps.set_docker_tag.outputs.docker_tag }}
