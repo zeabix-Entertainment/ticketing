@@ -14,7 +14,7 @@ on:
         required: true
       docker_password:
         required: true
-        
+
     outputs:
       docker_tag:
         description: "docker_tag for further deployment stage"
@@ -88,7 +88,7 @@ jobs:
           echo "$TAG_VERSION"
 
       - name: Upload git tag version for release candidate
-        if: "contains(github.ref, 'tags')"
+        if: "contains($APP_ENV, 'RELEASE')"
         uses: actions/upload-artifact@v3
         with:
           name: release_candidate_tag
