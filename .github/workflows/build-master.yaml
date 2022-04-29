@@ -28,6 +28,14 @@ on:
 
     
 jobs:
+  Preparation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World!
+        id: test1
+        run:
+          echo hello world
+
   build:
     name: ${{github.ref}}
     if: "!contains(github.ref, 'master')"
