@@ -31,25 +31,21 @@ on:
 
     
 jobs:
-  Prepare_build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Hello world
-        id: Hello_world
-        run: |
-          echo $WORKFLOW_NAME
-        env:
-          WORKFLOW_NAME: ${{inputs.workflow_name}}
 
   build:
     name: ${{github.ref}}
     if: "!contains(github.ref, 'master')"
-    needs: Prepare_build
     runs-on: ubuntu-latest
     outputs:
       docker_tag: ${{ steps.set_docker_tag.outputs.docker_tag }}
       env_flag: ${{ steps.set_docker_tag.outputs.env_flag }}
     steps:
+      - name: Prepare
+        run: |
+          echo $WORKFLOW_NAME
+        env:
+          WORKFLOW_NAME: ${{inputs.workflow_name}}
+
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
         id: set_docker_tag
