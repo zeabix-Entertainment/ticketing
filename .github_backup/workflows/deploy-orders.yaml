@@ -1,0 +1,27 @@
+## kaitest1
+name: deploy-orders
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'orders/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: cd orders && docker build -t zeabixdockerrepo/orders .
+      - run: docker push zeabixdockerrepo/orders
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS_DEV }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME_DEV }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }} 
+      - run: kubectl rollout restart deployment orders-depl
