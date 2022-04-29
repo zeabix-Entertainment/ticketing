@@ -28,6 +28,8 @@ on:
       env_flag:
         description: "env_flag"
         value: ${{ jobs.build.outputs.env_flag }}
+env:
+  WORKFLOW_NAME: ${{inputs.workflow_name}}
 
     
 jobs:
@@ -49,9 +51,9 @@ jobs:
           echo "::set-output name=app_env::${strarr[0]}"
           echo "::set-output name=app_dir::${strarr[1]}"
           echo "::set-output name=app_name::${strarr[2]}"
-          echo "action_state=yellow" >> $GITHUB_ENV
-        env:
-          WORKFLOW_NAME: ${{inputs.workflow_name}}
+ 
+   #    env:
+    #     WORKFLOW_NAME: ${{inputs.workflow_name}}
 
 
       - uses: actions/checkout@v2
