@@ -32,6 +32,8 @@ on:
         required: true
 env:
   WORKFLOW_NAME: ${{inputs.workflow_name}}
+  test1: client/deployment/client-depl.yaml
+  test2: client/deployment/client-depl-go.yaml
 
 jobs:
 
@@ -62,8 +64,8 @@ jobs:
         env:
             TAG_VERSION: '${{inputs.docker_tag}}'
         with:
-          input: ${APP_DIR}/deployment/${APP_DIR}-depl.yaml
-          output: ${APP_DIR}/deployment/${APP_DIR}-depl-go.yaml
+          input: $test1
+          output: $test2
 
       - name: Set KubeConfig
         uses: azure/aks-set-context@v1
