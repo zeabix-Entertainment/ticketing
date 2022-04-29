@@ -49,12 +49,15 @@ jobs:
           echo "manifest_original=${strarr[2]}/deployment/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
           echo "manifest_with_tag=${strarr[2]}/deployment/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
       
+          echo "workflow_to_retrieve_docker_tag=workflow-release-${APP_DIR}.yaml" >> $GITHUB_ENV
+      
       - name: Download artifact of docker tag for prod.
         if: "contains(github.ref, 'master')"       
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: workflow-release-client.yaml
+          workflow: ${{env.workflow_to_retrieve_docker_tag}}
           workflow_conclusion: success
+
 
       - run: cd release_candidate_tag && ls -al && cat release_candidate_tag.txt
         if: "contains(github.ref, 'master')"      
