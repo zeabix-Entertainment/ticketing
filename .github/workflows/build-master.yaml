@@ -31,10 +31,10 @@ jobs:
   Preparation:
     runs-on: ubuntu-latest
     steps:
-      - name: Hello World!
-        id: test1
+      - name: Set tag env for docker tag
+        id: set_docker_tag_1
         run: |
-          echo "hello world"
+          echo  ${{inputs.env_flag}}
 
   build:
     name: ${{github.ref}}
