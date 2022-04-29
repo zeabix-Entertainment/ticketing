@@ -1,0 +1,32 @@
+# kaitest1
+name: RELEASE_ticketing-client_client
+
+on:
+  push:
+    tags: 
+      - 'v*.*.*'
+
+jobs:
+
+  build:
+    uses: ./.github/workflows/build-master.yaml
+    with: 
+      workflow_name: ${{github.workflow}}
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy-master.yaml
+    with:
+      workflow_name: ${{github.workflow}}
+      docker_tag: ${{needs.build.outputs.docker_tag}}
+  
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      creds:  '${{ secrets.AZURE_CREDENTIALS_QA }}'
+      cluster-name: ${{ secrets.CLUSTER_NAME_QA }}
+      resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
+

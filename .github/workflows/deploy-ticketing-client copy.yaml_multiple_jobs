@@ -1,0 +1,93 @@
+# kaitest1
+name: deploy-ticketing-client
+
+on:
+  push:
+    branches:
+      - master
+      - feature-*
+#   paths:
+#     - 'client/**'
+    tags: 
+      - 'v*.*.*'
+
+jobs:
+  Evironment_Preperation:
+    runs-on: ubuntu-latest 
+    outputs:
+      env_flag: ${{steps.detect_env.outputs.env_flag}}
+      env_cred: ${{steps.detect_env.outputs.env_cred}}
+      env_cluster_name: ${{steps.detect_env.outputs.env_cluster_name}}
+      env_rg_name: ${{steps.detect_env.outputs.env_rg_name}}
+    steps:
+    - name: Detect Environment
+      id: detect_env
+      env:
+        ENV_FLAG: NOT_DEFINED
+        ENV_TARGET_AKS_CRED: NOT_DEFINED
+        ENV_TARGET_AKS_CLUSTER_NAME: NOT_DEFINED
+        ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP: NOT_DEFINED
+    
+      run: |
+        echo "$ENV_FLAG"
+        if [[ ${{github.ref}} == *"feature"* ]]
+         then
+         ENV_FLAG=DEV
+         ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS_DEV }}'
+         ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME_DEV }}
+         ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
+          
+        elif [[ ${{github.ref}} == *"tag"* ]]   
+          then   
+           ENV_FLAG=QA
+           ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS_QA }}'
+           ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME_QA }}
+           ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
+
+        elif [[ ${{github.ref}} == *"master"* ]]  
+          then   
+            ENV_FLAG=PROD
+            ENV_FLAG=QA
+            ENV_TARGET_AKS_CRED='${{ secrets.AZURE_CREDENTIALS }}'
+            ENV_TARGET_AKS_CLUSTER_NAME=${{ secrets.CLUSTER_NAME }}
+            ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP=${{ secrets.CLUSTER_RESOURCE_GROUP }}
+        fi
+
+        echo "::set-output name=env_flag::$ENV_FLAG"
+        echo "::set-output name=env_cred::$ENV_TARGET_AKS_CRED"
+        echo "::set-output name=env_cluster_name::$ENV_TARGET_AKS_CLUSTER_NAME"
+        echo "::set-output name=env_rg_name::ENV_TARGET_AKS_CLUSTER_RESOURCE_GROUP"
+
+
+        echo "$ENV_FLAG"
+        ENV_FLAG=new_one
+        echo "$ENV_FLAG"
+    
+  build:
+    needs: Evironment_Preperation
+    uses: ./.github/workflows/build-master.yaml
+    with: 
+      app_name: ticketing-client
+      app_dir: client
+      env_flag: ${{needs.Evironment_Preperation.outputs.env_flag}}
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy-master.yaml
+    with:
+      app_name: ticketing-client
+      app_dir: client
+      docker_tag: ${{needs.build.outputs.docker_tag}}
+      env_flag:   ${{needs.build.outputs.env_flag}}
+
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+
+      creds:  '${{ secrets.AZURE_CREDENTIALS_QA }}'
+      cluster-name: ${{ secrets.CLUSTER_NAME_QA }}
+    # resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
+      resource-group: "ddd"
