@@ -51,6 +51,10 @@ jobs:
           echo "APP_DIR : ${strarr[1]} "  
           echo "APP_NAME : ${strarr[2]}" 
 
+          echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
+          echo "APP_DIR=${strarr[1]}" >> $GITHUB_ENV
+          echo "APP_NAME=${strarr[2]}" >> $GITHUB_ENV
+
 
           echo "APP_ENVfgsdf=fff" >> $GITHUB_ENV
 
