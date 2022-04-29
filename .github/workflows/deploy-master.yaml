@@ -56,6 +56,7 @@ jobs:
           workflow_conclusion: success
 
       - run: cd release_candidate_tag && ls -al && cat release_candidate_tag.txt
+        if: "contains(github.ref, 'master')"      
 
       - name: Prepare Docker Tag
         id: Prepare_docker_tag
