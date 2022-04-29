@@ -32,7 +32,7 @@ on:
         required: true
 env:
   WORKFLOW_NAME: ${{inputs.workflow_name}}
-  
+
 jobs:
 
   deploy:
@@ -53,10 +53,9 @@ jobs:
 
       - uses: actions/checkout@v2 
       - run: |
-          echo ${{inputs.app_name}}
-          echo ${{inputs.app_dir}}
-          echo ${{inputs.docker_tag}}
-          echo ${{inputs.env_flag}}
+          echo $APP_ENV
+          echo $APP_NAME
+          echo $APP_DIR
     
       - name: Prepare deployment manifest file
         uses: danielr1996/envsubst-action@1.1.0
