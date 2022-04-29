@@ -26,6 +26,7 @@ jobs:
       app_dir: client
       docker_tag: ${{needs.build.outputs.docker_tag}}
       env_flag:   DEV
+      workflow_name: ${{github.workflow}}
 
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
