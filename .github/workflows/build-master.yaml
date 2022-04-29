@@ -45,12 +45,7 @@ jobs:
         id: Prepare
         run: |
           echo "action_state2=yellow" >> $GITHUB_ENV
-          echo $WORKFLOW_NAME
-          IFS='_'
-          read -a strarr <<<"$WORKFLOW_NAME" 
-          echo "APP_ENV : ${strarr[0]} "  
-          echo "APP_DIR : ${strarr[1]} "  
-          echo "APP_NAME : ${strarr[2]}"  
+    
 
           echo "APP_ENVfgsdf=fff" >> $GITHUB_ENV
 
