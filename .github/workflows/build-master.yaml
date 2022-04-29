@@ -86,11 +86,21 @@ jobs:
         run:  |
           docker push zeabixdockerrepo/$APP_NAME:$TAG_VERSION
           echo "$TAG_VERSION"
+      
+      - name: Create an artifact for docker tag for prod. 
+        if: "contains(github.ref, 'tags')"
+        run: |
+           echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
+           cat release_candidate_tag.txt
 
       - name: Upload git tag version for release candidate
+      # if:  ${{env.APP_ENV}} == "RELEASE"
         if: "contains(github.ref, 'tags')"
         uses: actions/upload-artifact@v3
         with:
           name: release_candidate_tag
           path: release_candidate_tag.txt 
+
+     
+
 
