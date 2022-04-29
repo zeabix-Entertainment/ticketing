@@ -53,9 +53,6 @@ jobs:
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
 
-          test1: client/deployment/client-depl.yaml
-          test2: client/deployment/client-depl-go.yaml
-
       - uses: actions/checkout@v2 
       - run: |
           echo $APP_ENV
