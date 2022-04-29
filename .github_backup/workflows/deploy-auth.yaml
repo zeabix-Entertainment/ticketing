@@ -1,0 +1,32 @@
+## kaitest1
+name: deploy-auth
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'auth/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd auth && docker build -t zeabixdockerrepo/auth .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push zeabixdockerrepo/auth
+
+  deploy:
+    runs-on: ubuntu-latest 
+    needs: build   
+    steps: 
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS_DEV }}'
+          cluster-name: ${{ secrets.CLUSTER_NAME_DEV }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }} 
+      - run: kubectl rollout restart deployment auth-depl

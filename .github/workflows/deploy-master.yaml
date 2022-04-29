@@ -1,0 +1,79 @@
+# kaitest1
+name: deploy-master
+
+on:
+  workflow_call:
+    inputs:
+      docker_tag:
+        required: true
+        type: string
+      workflow_name:
+        required: true
+        type: string
+    secrets:
+      docker_username:
+        required: true
+      docker_password:
+        required: true
+      creds:
+        required: true
+      cluster-name:
+        required: true
+      resource-group:
+        required: true
+env:
+  WORKFLOW_NAME: ${{inputs.workflow_name}}
+ # test1: client/deployment/client-depl.yaml
+ # test2: client/deployment/client-depl-go.yaml
+
+jobs:
+
+  deploy:
+    name: ${{github.ref}}
+    runs-on: ubuntu-latest     
+    steps:
+      - name: Prepare
+        id: Prepare
+        run: |
+          echo $WORKFLOW_NAME
+          strarr=(${WORKFLOW_NAME//"_"/ })
+          echo "APP_ENV : ${strarr[0]} "  
+          echo "APP_NAME : ${strarr[1]}" 
+          echo "APP_DIR : ${strarr[2]} "  
+          echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
+          echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
+          echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
+
+          echo "manifest_original=${strarr[2]}/deployment/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
+          echo "manifest_with_tag=${strarr[2]}/deployment/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v2 
+      - run: |
+          echo $APP_ENV
+          echo $APP_NAME
+          echo $APP_DIR
+    
+      - name: Prepare deployment manifest file
+        uses: danielr1996/envsubst-action@1.1.0
+        env:
+            TAG_VERSION: '${{inputs.docker_tag}}'
+        with:
+          input: ${{env.manifest_original}}
+          output: ${{env.manifest_with_tag}}
+
+      - name: Set KubeConfig
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.creds }}'
+          cluster-name: ${{ secrets.cluster-name }}
+          resource-group: ${{ secrets.resource-group }}
+      
+      - name: Docker Registry login
+        run:  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.docker_username }}
+          DOCKER_PASSWORD: ${{ secrets.docker_password }}
+
+      - name: Apply kubectl to deploy new app container to kubernetes cluster
+        run: kubectl apply -f $APP_DIR/deployment/$APP_DIR-depl-go.yaml
+      

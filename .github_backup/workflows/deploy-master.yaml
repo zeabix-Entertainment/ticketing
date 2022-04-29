@@ -1,0 +1,66 @@
+# kaitest1
+name: deploy-master
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      app_dir:
+        required: true
+        type: string
+      docker_tag:
+        required: true
+        type: string
+      env_flag:
+        required: true
+        type: string
+    secrets:
+      docker_username:
+        required: true
+      docker_password:
+        required: true
+      creds:
+        required: true
+      cluster-name:
+        required: true
+      resource-group:
+        required: true
+jobs:
+
+  deploy:
+    name: ${{github.ref}}
+    runs-on: ubuntu-latest     
+    steps:
+      - uses: actions/checkout@v2 
+      - run: |
+          echo ${{inputs.app_name}}
+          echo ${{inputs.app_dir}}
+          echo ${{inputs.docker_tag}}
+          echo ${{inputs.env_flag}}
+    
+      - name: Prepare deployment manifest file
+        uses: danielr1996/envsubst-action@1.1.0
+        env:
+            TAG_VERSION: '${{inputs.env_flag}}'
+        with:
+          input: client/deployment/client-depl.yaml
+          output: client/deployment/client-depl-go.yaml
+
+      - name: Set KubeConfig
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.creds }}'
+          cluster-name: ${{ secrets.cluster-name }}
+          resource-group: ${{ secrets.resource-group }}
+      
+      - name: Docker Registry login
+        run:  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.docker_username }}
+          DOCKER_PASSWORD: ${{ secrets.docker_password }}
+
+      - name: Apply kubectl to deploy new app container to kubernetes cluster
+        run: kubectl apply -f client/deployment/client-depl-go.yaml
+      
