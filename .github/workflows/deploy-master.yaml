@@ -49,7 +49,7 @@ jobs:
           echo "manifest_original=${strarr[2]}/deployment/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
           echo "manifest_with_tag=${strarr[2]}/deployment/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
       
-          echo "workflow_to_retrieve_docker_tag=workflow-release-${APP_DIR}.yaml" >> $GITHUB_ENV
+          echo "workflow_to_retrieve_docker_tag=workflow-release-${strarr[2]}.yaml" >> $GITHUB_ENV
       
       - name: Download artifact of docker tag for prod.
         if: "contains(github.ref, 'master')"       
