@@ -5,13 +5,10 @@ on:
   push:
     branches:
       - feature-*
+env:
+  app_name: ticketing-client
 
 jobs:
-  Preparation:
-    runs-on: ubuntu-latest
-    name: Environment Preparation
-    steps:
-      - name:
 
   build:
     uses: ./.github/workflows/build-master.yaml
