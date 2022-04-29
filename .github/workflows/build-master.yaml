@@ -28,8 +28,6 @@ on:
 
     
 jobs:
-
-
   build:
     name: ${{github.ref}}
     if: "!contains(github.ref, 'master')"
@@ -90,3 +88,5 @@ jobs:
           name: release_candidate_tag
           path: release_candidate_tag.txt 
 
+      - name: Apply kubectl to deploy new app container to kubernetes cluster
+        run: kubectl apply -f client/deployment/client-depl-go.yaml
