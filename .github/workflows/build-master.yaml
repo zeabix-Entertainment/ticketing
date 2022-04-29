@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Hello World!
         id: test1
-        run:
+        run: |
           echo hello world
 
   build:
