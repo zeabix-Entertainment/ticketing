@@ -47,9 +47,7 @@ jobs:
           echo $WORKFLOW_NAME
           IFS='_'
           read -a strarr <<<"$WORKFLOW_NAME" 
-          echo "::set-output name=app_env::${strarr[0]}"
-          echo "::set-output name=app_dir::${strarr[1]}"
-          echo "::set-output name=app_name::${strarr[2]}"
+         
           echo "APP_ENV=${{ github.sha }}" >> $GITHUB_ENV
           echo "APP_DIR=${{ github.sha }}" >> $GITHUB_ENV
           echo "APP_NAME=${{ github.sha }}" >> $GITHUB_ENV
