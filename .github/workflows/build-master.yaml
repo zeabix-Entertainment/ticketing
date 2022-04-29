@@ -43,7 +43,7 @@ jobs:
       - name: Prepare
         run: |
           echo $WORKFLOW_NAME
-          IFS='-'
+          IFS='_'
           read -a strarr <<<"$WORKFLOW_NAME" 
           echo "Environment : ${strarr[0]} "  
           echo "app_dir : ${strarr[1]} "  
