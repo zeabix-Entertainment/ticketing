@@ -28,7 +28,7 @@ on:
 
     
 jobs:
-  Prepare build:
+  Prepare_build:
     runs-on: ubuntu-latest
     steps:
       - name: Hello world
