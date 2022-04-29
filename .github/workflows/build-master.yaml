@@ -46,7 +46,6 @@ jobs:
           echo $WORKFLOW_NAME
           IFS='_'
           read -a strarr <<<"$WORKFLOW_NAME" 
-
           echo "::set-output name=app_env::${strarr[0]}"
           echo "::set-output name=app_dir::${strarr[1]}"
           echo "::set-output name=app_name::${strarr[2]}"
@@ -85,8 +84,6 @@ jobs:
           echo "$kai"
           echo "$TAG_VERSION_TEMP"
           echo "$TAG_VERSION_TEMP"
-
-          
 
       - name: Build Docker Image with proper tag. 
         run:  | 
