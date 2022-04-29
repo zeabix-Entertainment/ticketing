@@ -45,20 +45,23 @@ jobs:
           echo $WORKFLOW_NAME
           IFS='_'
           read -a strarr <<<"$WORKFLOW_NAME" 
-          echo "Environment : ${strarr[0]} "  
-          echo "app_dir : ${strarr[1]} "  
-          echo "app_name : ${strarr[2]}"  
+
+          echo "ENVi=${strarr[0]" >> $GITHUB_ENV
+          echo "APP_DIR=${strarr[1]" >> $GITHUB_ENV
+          echo "APP_NAME=${strarr[2]" >> $GITHUB_ENV
+
         env:
           WORKFLOW_NAME: ${{inputs.workflow_name}}
+
 
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
         id: set_docker_tag
         run: |
           echo  ${{inputs.env_flag}}
-          echo "Environment : ${strarr[0]} "  
-          echo "app_dir : ${strarr[1]} "  
-          echo "app_name : ${strarr[2]}"  
+          echo "Environment : $ENV1"  
+          echo "app_dir : $APP_DIR"  
+          echo "app_name : $APP_NAME"  
           if [[ ${{inputs.env_flag}} == "DEV" ]] 
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
