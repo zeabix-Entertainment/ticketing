@@ -52,7 +52,7 @@ jobs:
           echo "APP_DIR : ${strarr[1]} "  
           echo "APP_NAME : ${strarr[2]}"  
 
-          echo "APP_ENV=fff" >> $GITHUB_ENV
+          echo "APP_ENVfgsdf=fff" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
