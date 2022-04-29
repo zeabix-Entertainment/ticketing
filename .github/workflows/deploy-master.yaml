@@ -62,8 +62,8 @@ jobs:
         env:
             TAG_VERSION: '${{inputs.docker_tag}}'
         with:
-          input: $APP_DIR/deployment/$APP_DIR-depl.yaml
-          output: $APP_DIR/deployment/$APP_DIR-depl-go.yaml
+          input: ${APP_DIR}/deployment/${APP_DIR}-depl.yaml
+          output: ${APP_DIR}/deployment/${APP_DIR}-depl-go.yaml
 
       - name: Set KubeConfig
         uses: azure/aks-set-context@v1
