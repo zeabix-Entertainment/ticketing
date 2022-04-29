@@ -47,7 +47,7 @@ jobs:
           echo "action_state2=yellow" >> $GITHUB_ENV
           echo $WORKFLOW_NAME
           IFS='_'
-          read -a strarr <<<"$WORKFLOW_NAME" 
+
 
           echo "APP_ENVfgsdf=fff" >> $GITHUB_ENV
 
