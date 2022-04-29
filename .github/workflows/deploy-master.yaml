@@ -32,8 +32,8 @@ on:
         required: true
 env:
   WORKFLOW_NAME: ${{inputs.workflow_name}}
-  test1: client/deployment/client-depl.yaml
-  test2: client/deployment/client-depl-go.yaml
+ # test1: client/deployment/client-depl.yaml
+ # test2: client/deployment/client-depl-go.yaml
 
 jobs:
 
@@ -52,6 +52,9 @@ jobs:
           echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
+
+           echo "test1=client/deployment/client-depl.yaml" >> $GITHUB_ENV
+           echo "APP_DIR=client/deployment/client-depl-go.yaml" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2 
       - run: |
