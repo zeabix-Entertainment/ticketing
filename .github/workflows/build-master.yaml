@@ -52,6 +52,8 @@ jobs:
           echo "APP_DIR : ${strarr[1]} "  
           echo "APP_NAME : ${strarr[2]}"  
           
+          echo "APP_ENV=$strarr[0]" >> $GITHUB_ENV
+
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
         id: set_docker_tag
