@@ -26,7 +26,7 @@ jobs:
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
-      creds:  '${{ secrets.AZURE_CREDENTIALS_DEV }}'
-      cluster-name: ${{ secrets.CLUSTER_NAME_DEV }}
-      resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_DEV }}
+      creds:  '${{ secrets.AZURE_CREDENTIALS_QA }}'
+      cluster-name: ${{ secrets.CLUSTER_NAME_QA }}
+      resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_QA }}
 
