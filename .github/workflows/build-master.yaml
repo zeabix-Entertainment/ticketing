@@ -34,7 +34,7 @@ jobs:
       - name: Hello World!
         id: test1
         run: |
-          echo hello world
+          echo "hello world"
 
   build:
     name: ${{github.ref}}
