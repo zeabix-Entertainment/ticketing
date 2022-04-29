@@ -48,6 +48,9 @@ jobs:
           echo $WORKFLOW_NAME
           IFS='_'
           read -a strarr <<<"$WORKFLOW_NAME" 
+          echo "APP_ENV : ${strarr[0]} "  
+          echo "APP_DIR : ${strarr[1]} "  
+          echo "APP_NAME : ${strarr[2]}"  
 
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
