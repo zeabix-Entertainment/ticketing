@@ -16,7 +16,7 @@ jobs:
       app_name: ticketing-client
       app_dir:  client
       env_flag: DEV
-      flow_name: ${{github.workflow}}
+      workflow_name: ${{github.workflow}}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
