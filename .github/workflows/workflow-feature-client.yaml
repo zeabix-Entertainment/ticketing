@@ -1,5 +1,5 @@
 # kaitest1
-name: workflow-feature-client
+name: DEV_ticketing-client_client
 
 on:
   push:
@@ -16,6 +16,7 @@ jobs:
       app_name: ticketing-client
       app_dir:  client
       env_flag: DEV
+      flow_name: ${{github.workflow}}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
