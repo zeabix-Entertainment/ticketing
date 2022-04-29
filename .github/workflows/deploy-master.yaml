@@ -23,6 +23,7 @@ on:
         required: true
 env:
   WORKFLOW_NAME: ${{inputs.workflow_name}}
+  DOCKER_TAG: ${{inputs.docker_tag}}
  # test1: client/deployment/client-depl.yaml
  # test2: client/deployment/client-depl-go.yaml
 
@@ -32,7 +33,7 @@ jobs:
     name: ${{github.ref}}
     runs-on: ubuntu-latest     
     steps:
-      - name: Prepare
+      - name: Prepare environment
         id: Prepare
         run: |
           echo $WORKFLOW_NAME
@@ -46,7 +47,34 @@ jobs:
 
           echo "manifest_original=${strarr[2]}/deployment/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
           echo "manifest_with_tag=${strarr[2]}/deployment/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
+      
+      - name: Download artifact of docker tag for prod.
+        if: "contains(github.ref, 'master')"       
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: workflow-release-client.yaml
+          workflow_conclusion: success
 
+      - run: cd release_candidate_tag && ls -al && cat release_candidate_tag.txt
+        if: "contains(github.ref, 'master')"      
+
+      - name: Prepare Docker Tag
+        id: Prepare_docker_tag
+        run: |
+
+          if [[ $APP_ENV == "DEV" ]] 
+          then
+            echo "TAG_VERSION_TARGET=${DOCKER_TAG}" >> $GITHUB_ENV
+       
+          elif [[ $APP_ENV == "RELEASE" ]]   
+          then   
+            echo "TAG_VERSION_TARGET=${DOCKER_TAG}" >> $GITHUB_ENV
+          
+          elif [[ $APP_ENV == "PROD" ]]   
+          then   
+            echo "TAG_VERSION_TARGET=$(cat release_candidate_tag/release_candidate_tag.txt)"  >> $GITHUB_ENV
+          fi
+     
       - uses: actions/checkout@v2 
       - run: |
           echo $APP_ENV
@@ -56,7 +84,7 @@ jobs:
       - name: Prepare deployment manifest file
         uses: danielr1996/envsubst-action@1.1.0
         env:
-            TAG_VERSION: '${{inputs.docker_tag}}'
+            TAG_VERSION: '${{env.TAG_VERSION_TARGET}}'
         with:
           input: ${{env.manifest_original}}
           output: ${{env.manifest_with_tag}}
@@ -77,3 +105,4 @@ jobs:
       - name: Apply kubectl to deploy new app container to kubernetes cluster
         run: kubectl apply -f $APP_DIR/deployment/$APP_DIR-depl-go.yaml
       
+

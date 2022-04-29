@@ -1,0 +1,24 @@
+# kaitest1
+name: PROD_ticketing-client_client
+
+on:
+  push:
+    tags: 
+      - 'v*.*.*'
+
+jobs:
+
+  deploy:
+
+    uses: ./.github/workflows/deploy-master.yaml
+    with:
+      workflow_name: ${{github.workflow}}
+      docker_tag: tag_artifact
+  
+    secrets:
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      docker_password: ${{ secrets.DOCKER_PASSWORD }}
+      creds:  '${{ secrets.AZURE_CREDENTIALS }}'
+      cluster-name: ${{ secrets.CLUSTER_NAME }}
+      resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP }}
+
