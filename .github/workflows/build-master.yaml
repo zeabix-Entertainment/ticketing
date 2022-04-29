@@ -55,9 +55,9 @@ jobs:
           echo "::set-output name=app_env::${strarr[0]}"
           echo "::set-output name=app_dir::${strarr[1]}"
           echo "::set-output name=app_name::${strarr[2]}"
-          APP_ENV=${strarr[0]
-          APP_DIR=${strarr[1]
-          APP_NAME=${strarr[2]
+          APP_ENV=${strarr[0]}
+          APP_DIR=${strarr[1]}
+          APP_NAME=${strarr[2]}
 
  
    #    env:
