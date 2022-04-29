@@ -55,9 +55,6 @@ jobs:
           echo "APP_DIR=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_NAME=${strarr[2]}" >> $GITHUB_ENV
 
-
-          echo "APP_ENVfgsdf=fff" >> $GITHUB_ENV
-
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
         id: set_docker_tag
@@ -69,7 +66,7 @@ jobs:
           echo $APP_NAME
           echo "action_state=yellow" >> $GITHUB_ENV
 
-          if [[ ${{inputs.env_flag}} == "DEV" ]] 
+          if [[ $APP_ENV == "DEV" ]] 
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
             echo $GITHUB_ENV
