@@ -72,6 +72,7 @@ jobs:
           if [[ ${{inputs.env_flag}} == "DEV" ]] 
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
+            echo $GITHUB_ENV
             export TAG_VERSION_TEMP=${{ github.sha }}
           
           elif [[ ${{inputs.env_flag}} == "RELEASE" ]]   
