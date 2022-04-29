@@ -7,13 +7,14 @@ on:
       - feature-*
 env:
   app_name: ticketing-client
+  test1: ${{github.workflow}}
 
 jobs:
 
   build:
     uses: ./.github/workflows/build-master.yaml
     with: 
-      workflow_name: ${{github.workflow}}
+      workflow_name: ${{env.test1}}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
