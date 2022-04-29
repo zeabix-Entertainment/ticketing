@@ -43,6 +43,11 @@ jobs:
       - name: Prepare
         run: |
           echo $WORKFLOW_NAME
+          IFS='-'
+          read -a strarr <<<"$WORKFLOW_NAME" 
+          echo "Environment : ${strarr[0]} "  
+          echo "app_dir : ${strarr[1]} "  
+          echo "app_name : ${strarr[2]}"  
         env:
           WORKFLOW_NAME: ${{inputs.workflow_name}}
 
