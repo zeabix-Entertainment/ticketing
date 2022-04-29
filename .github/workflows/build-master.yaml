@@ -45,7 +45,7 @@ jobs:
         id: Prepare
         run: |
           echo "action_state2=yellow" >> $GITHUB_ENV
-         
+          echo $WORKFLOW_NAME
 
 
           echo "APP_ENVfgsdf=fff" >> $GITHUB_ENV
