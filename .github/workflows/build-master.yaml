@@ -58,6 +58,9 @@ jobs:
           APP_ENV=${strarr[0]}
           APP_DIR=${strarr[1]}
           APP_NAME=${strarr[2]}
+          echo $APP_ENV 
+          echo $APP_DIR
+          echo $APP_NAME
 
  
    #    env:
@@ -70,9 +73,9 @@ jobs:
         run: |
           echo  ${{inputs.env_flag}}
 
-          echo ${{ steps.Prepare.outputs.app_env }}  
-          echo ${{ steps.Prepare.outputs.app_dir }}  
-          echo ${{ steps.Prepare.outputs.app_name }} 
+          echo $APP_ENV 
+          echo $APP_DIR
+          echo $APP_NAME
 
           if [[ ${{inputs.env_flag}} == "DEV" ]] 
           then
