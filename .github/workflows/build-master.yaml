@@ -68,6 +68,7 @@ jobs:
           echo $APP_ENV 
           echo $APP_DIR
           echo $APP_NAME
+          echo "action_state=yellow" >> $GITHUB_ENV
 
           if [[ ${{inputs.env_flag}} == "DEV" ]] 
           then
