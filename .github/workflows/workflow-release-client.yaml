@@ -1,10 +1,11 @@
 # kaitest1
-name: DEV_ticketing-client_client
+name: RELEASE_ticketing-client_client
 
 on:
   push:
-    branches:
-      - feature-*
+    tags: 
+      - 'v*.*.*'
+
 jobs:
 
   build:
