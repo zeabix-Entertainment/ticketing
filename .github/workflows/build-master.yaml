@@ -28,13 +28,7 @@ on:
 
     
 jobs:
-  Preparation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set tag env for docker tag
-        id: set_docker_tag_1
-        run: |
-          echo  ${{inputs.env_flag}}
+
 
   build:
     name: ${{github.ref}}
