@@ -4,6 +4,9 @@ name: deploy-master
 on:
   workflow_call:
     inputs:
+      docker_tag:
+        required: true
+        type: string
       workflow_name:
         required: true
         type: string
