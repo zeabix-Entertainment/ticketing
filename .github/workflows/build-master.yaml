@@ -44,36 +44,25 @@ jobs:
       - name: Prepare
         id: Prepare
         run: |
-          echo "action_state2=yellow" >> $GITHUB_ENV
           echo $WORKFLOW_NAME
           strarr=(${WORKFLOW_NAME//"_"/ })
           echo "APP_ENV : ${strarr[0]} "  
           echo "APP_NAME : ${strarr[1]}" 
           echo "APP_DIR : ${strarr[2]} "  
-         
-
           echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
-      
 
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
         id: set_docker_tag
         run: |
-          echo  ${{inputs.env_flag}}
-
-          echo $APP_ENV 
-          echo $APP_DIR
-          echo $APP_NAME
-          echo "action_state=yellow" >> $GITHUB_ENV
-
           if [[ $APP_ENV == "DEV" ]] 
           then
             echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
             echo $GITHUB_ENV
             export TAG_VERSION_TEMP=${{ github.sha }}
-          
+ 
           elif [[ $APP_ENV == "RELEASE" ]]   
           then   
             echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
