@@ -92,12 +92,6 @@ jobs:
            echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
            cat release_candidate_tag.txt
 
-
-      - name: Upload git tag version for prod.
-      # if:  ${{env.APP_ENV}} == "RELEASE"
-        if: "contains(github.ref, 'tags')"
-
-
       - name: Upload git tag version for release candidate
         if:   ${{env.APP_ENV  == 'RELEASE'}}
       ##if: "contains(github.ref, 'tags')"
