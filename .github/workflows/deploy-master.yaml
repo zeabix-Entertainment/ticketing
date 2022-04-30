@@ -46,8 +46,8 @@ jobs:
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
 
-          echo "manifest_original=${infra/k8s/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
-          echo "manifest_with_tag=${infra/k8s/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
+          echo "manifest_original="infra/k8s/${strarr[2]}-depl.yaml" >> $GITHUB_ENV
+          echo "manifest_with_tag="infra/k8s/${strarr[2]}-depl-go.yaml" >> $GITHUB_ENV
       
           echo "workflow_to_retrieve_docker_tag=workflow-release-${strarr[2]}.yaml" >> $GITHUB_ENV
       
