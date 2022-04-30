@@ -1,3 +1,4 @@
+
 # kaitest1
 name: deploy-master
 
@@ -51,7 +52,7 @@ jobs:
           echo "workflow_to_retrieve_docker_tag=workflow-release-${strarr[2]}.yaml" >> $GITHUB_ENV
       
       - name: Download artifact of docker tag for prod.
-        if: "contains(github.ref, 'master')"       
+        if: ${{env.APP_ENV  == 'PROD'}}       
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: ${{env.workflow_to_retrieve_docker_tag}}
@@ -59,7 +60,7 @@ jobs:
 
 
       - run: cd release_candidate_tag && ls -al && cat release_candidate_tag.txt
-        if: "contains(github.ref, 'master')"      
+        if: ${{env.APP_ENV  == 'PROD'}}         
 
       - name: Prepare Docker Tag
         id: Prepare_docker_tag
