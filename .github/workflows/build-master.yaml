@@ -93,7 +93,7 @@ jobs:
            cat release_candidate_tag.txt
 
       - name: Upload git tag version for release candidate
-        if:   env.APP_ENV  == "RELEASE"
+        if:   env.APP_ENV  == 'RELEASE'
       ##if: "contains(github.ref, 'tags')"
         uses: actions/upload-artifact@v3
         with:
