@@ -30,7 +30,7 @@ jobs:
   build:
     name: ${{github.ref}}
   # if: "!contains(github.ref, 'master')"
-    if: ${{env.WORKFLOW_NAME}} == "kai"
+    if: env.WORKFLOW_NAME == "kai"
     runs-on: ubuntu-latest
     outputs:
       docker_tag: ${{ steps.set_docker_tag.outputs.docker_tag }}
