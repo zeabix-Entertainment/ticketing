@@ -96,11 +96,10 @@ jobs:
       # if:  ${{env.APP_ENV}} == "RELEASE"
         if: "contains(github.ref, 'tags')"
 
-=======
       - name: Upload git tag version for release candidate
         if:   ${{env.APP_ENV  == 'RELEASE'}}
       ##if: "contains(github.ref, 'tags')"
->>>>>>> dev
+
         uses: actions/upload-artifact@v3
         with:
           name: release_candidate_tag
