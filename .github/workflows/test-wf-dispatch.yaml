@@ -1,6 +1,7 @@
 name: My workflow
 on:
-  workflow_dispatch:
+#  workflow_dispatch:
+   push:
 
 jobs:
   build-tools:
