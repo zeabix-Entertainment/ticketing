@@ -8,3 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo 1
+
+        ## curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token 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" https://api.github.com/repos/zeabix-Entertainment/ticketing/actions/workflows/test-wf-dispatch.yaml/dispatches -d '{"ref": "refs/heads/master"}'
