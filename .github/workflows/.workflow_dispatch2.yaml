@@ -1,0 +1,10 @@
+name: My workflow
+on:
+  workflow_dispatch:
+#   push:
+
+jobs:
+  build-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 1
