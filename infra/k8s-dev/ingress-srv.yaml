@@ -43,6 +43,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: client-srv
+                name: client
                 port: 
                   number: 3000
