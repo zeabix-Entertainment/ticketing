@@ -50,6 +50,7 @@ spec:
       prune: true
       selfHeal: true
 ---
+## git repository connection with SSH key.
 apiVersion: v1
 data:
   name: dGVzdDI=
@@ -67,8 +68,10 @@ metadata:
   namespace: argocd
 type: Opaque
 ---
-# add local users, however we need to set password for these users by argocd cli.
+# add local users, however we need to set password for these users by argocd cli or put their passwords in "argocd-secret" secret with base64 encoded.
 # https://medium.com/geekculture/create-a-new-user-in-argocd-using-the-cli-and-configmap-8cbb27cf5904
+# there is a bug with Azure App registartion see workaround here:
+# https://github.com/argoproj/argo-cd/issues/5947
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -80,7 +83,21 @@ metadata:
 data:
   accounts.user1: login
   accounts.user2: login
+  url: https://z-commerce-dev.zeabix.com/argocd/
+  oidc.config: |
+      name: Azure
+      issuer: https://login.microsoftonline.com/8c076dc3-f1b6-4ade-b70f-3ed761b6466f/v2.0
+      clientID: 15c25b7d-dd54-4d4a-aa0e-f3d2d69a3f7e
+      clientSecret: $oidc.azure.clientSecret
+      requestedIDTokenClaims:
+          groups:
+              essential: true
+      requestedScopes:
+          - openid
+          - profile
+          - email
 ---
+# Assign role
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -99,7 +116,32 @@ data:
     p, role:org-admin, repositories, delete, *, allow
     g, user1, role:org-admin
     g, user2, role:org-admin
-  policy.default: role:''
+    g, "18bf818e-f2c8-4302-aa05-dd2ba4f172a2", role:org-admin
+  policy.default: role:readonly
+
+---
+apiVersion: v1
+data:
+  oidc.azure.clientSecret: R1ItOFF+dVVDWFYycnJfR21LN25hSWIueEJfS3lxdUZ1VWQ2bGNlMw==
+  accounts.user1.password: JDJhJDEwJEU1SnUvMzNNWHN4aWRtc2x6TFE5ME9ac0huaEk2dHdkNzhLNm5QdkdjWWZ3d2VrV3NvMFNl
+  accounts.user1.passwordMtime: MjAyMi0wNS0wNFQwOToxOTo1OVo=
+  accounts.user1.tokens: bnVsbA==
+  accounts.user2.password: JDJhJDEwJEk0TFhjUnI4YVl6aXhKbUpaMVkyaGU1UlM5d3N1c2IuODJvaDNzNXpFc1NHbnh2cWlTTmNP
+  accounts.user2.passwordMtime: MjAyMi0wNS0wNFQwOToyMDoxNlo=
+  accounts.user2.tokens: bnVsbA==
+  admin.password: JDJhJDEwJEhaZVlCck9BcFlXc090LkdoUWtVZk9FRmtiMEQwNzl1MjZYREo4cW9HVVpmMlpuaGFSWkpX
+  admin.passwordMtime: MjAyMi0wNS0wM1QxNjoxNTowM1o=
+  server.secretkey: bFJ5NXZnUVB1ZmZKNzV1MEx4QlR5RGxYTUdKWHN1VGpGS0o3bTJyN0F3MD0=
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURZekNDQWt1Z0F3SUJBZ0lSQU5UWDQ1OGtsQnRlZ1NrWWphc0FLRmN3RFFZSktvWklodmNOQVFFTEJRQXcKRWpFUU1BNEdBMVVFQ2hNSFFYSm5ieUJEUkRBZUZ3MHlNakExTURNeE1qTTNOVFZhRncweU16QTFNRE14TWpNMwpOVFZhTUJJeEVEQU9CZ05WQkFvVEIwRnlaMjhnUTBRd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3CmdnRUtBb0lCQVFDZnJOZlhYcDdnbXNVSENQQXZYL3plZkE0U1g5N1lFcXN2MEFXUS9kazQ4YUNzckMzSTlucmgKN1JMV2MzTkllMG5jQTRTbktXbjhFR3dxVTQvYmZJSHNSYU1tdVFNVit4bUpiajV0WjZJbVdKVHN3TW80Y0JjNQpIZ0tVN0QwVGRaMC96eGhuTWQ4SkplZEl0d2JzYVhHL0tpYVlFYTJiaUp4WitjeCt2Y2dnanZzYzhIK0taMUxvCnRoMk5lM0FvajVRRlBPRTdlSkwwM2tkOC9BdEt1MG5hNkMxK1pmNDIyMTZVSkdsMzhBWWlrYUdFbG1CL0ZaZTcKVDdKWTRqSkRZNUVQTmVtYjE1MFlFUkt1RzU2R09HeDVqR2R3NFQzTERFZGdyL29mcEdQUHdUaitTNEpDR1lpRQpXWHgvcXB5Wm9pTDBsdHFJNDV3ZDFNRjQwblF0cXJIdkFnTUJBQUdqZ2JNd2diQXdEZ1lEVlIwUEFRSC9CQVFECkFnV2dNQk1HQTFVZEpRUU1NQW9HQ0NzR0FRVUZCd01CTUF3R0ExVWRFd0VCL3dRQ01BQXdld1lEVlIwUkJIUXcKY29JSmJHOWpZV3hvYjNOMGdnMWhjbWR2WTJRdGMyVnlkbVZ5Z2hSaGNtZHZZMlF0YzJWeWRtVnlMbUZ5WjI5agpaSUlZWVhKbmIyTmtMWE5sY25abGNpNWhjbWR2WTJRdWMzWmpnaVpoY21kdlkyUXRjMlZ5ZG1WeUxtRnlaMjlqClpDNXpkbU11WTJ4MWMzUmxjaTVzYjJOaGJEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFESHRZbVRjM29idEYKSmhweUR2RWpucmxKY1BvMGkxaGFoK05LZTc0VkExQUUrVTJVNGZsNTFtaWJsMkRTbGsrbDZQajZ5ZjRmcDVUQwpXSDFUcjBZVUw0UU5MeXFMOHZUVTBwekZ6RTMxZFBPekRRVVZkQWdZL3pFU0doSGVpVlBmeSt3VTBvNk5oc3lDCjR1V1A2VTd2ejhFcUFyU3lDaGRadWJEeE9peDlNeEpnWmhQZXFMcEVla0w0R1FJNXhZdFA0a2hRTjFwTmd0elQKZWNvenU0Y2JjdnJyclIya09xaGVqUTJjWmorZGdsaldscXJ2NWhOamhMeHF0OS9maHJVUTlJYWEvU3ZhN21jSAptdTJIL29DQVhybG5abTlvUWMvU1RpMlJ3K1M5M0wxdUFlNUxsVDgrU1FiNTJrSXFSdzU0R041ZkNoSUdFTFI4Ck4zK3p2TkFESUE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBbjZ6WDExNmU0SnJGQndqd0wxLzgzbndPRWwvZTJCS3JMOUFGa1AzWk9QR2dyS3d0CnlQWjY0ZTBTMW5OelNIdEozQU9FcHlscC9CQnNLbE9QMjN5QjdFV2pKcmtERmZzWmlXNCtiV2VpSmxpVTdNREsKT0hBWE9SNENsT3c5RTNXZFA4OFlaekhmQ1NYblNMY0c3R2x4dnlvbW1CR3RtNGljV2ZuTWZyM0lJSTc3SFBCLwppbWRTNkxZZGpYdHdLSStVQlR6aE8zaVM5TjVIZlB3TFNydEoydWd0Zm1YK050dGVsQ1JwZC9BR0lwR2hoSlpnCmZ4V1h1MCt5V09JeVEyT1JEelhwbTllZEdCRVNyaHVlaGpoc2VZeG5jT0U5eXd4SFlLLzZINlJqejhFNC9rdUMKUWhtSWhGbDhmNnFjbWFJaTlKYmFpT09jSGRUQmVOSjBMYXF4N3dJREFRQUJBb0lCQUdFNC9MTkdDYmI0aGI4aQowaHdHZGhHQnQ0KzRrQmRBUnJ0MkRlMmFvd2pwRnN3TWlsUXl2OStRV2tmNVE5aCtPUnFkaWNlK2o2bksxaEZ2Cmo4ZzBwMmNWZjZHMFJReTlOMjlXa094TWpZNkxvU0lHd1JwY0pjZkJYaEVQUnFEeW5DeWVERjNKSCtTU0Q2RlcKMEFCaXM3K1NDcTNORmNmK0JqVkN4Q0RuclZNa3hjdTlvekducklHUlpaQ2RDaENnNHcwN1FMNUx2aEdncjVHQwpMdDBMVk92bm4xVjBXdVFtUXloRFZlVVZxdThycmtBSDFoVVg2anZPN0RQOGV2QmVlZzFuUjM0MnJuTHIzaUllClpYckVLRmJ0U1QzemovcVNaaTU3V2hXNXJkYStEeUJ3RThiZEU2Q0pyWjlLNk1sZjJxQTVrSGM5RDR3K1UzQjQKd1pUbHVBRUNnWUVBeWU2bEhVUnpvRi9KeUxHc2wrMUVWUWQ1dHVYN2dvckkxMHZXclZuRmZrdUhRcTkwRzJlSQpUSnZGZ1lQWi9SUkNWTWt2UkdRa04wbkROYmIwYzZuWDN2Yzk3VGNqYyt0ZVRNcVdFVFdPMHhNenZ6bWsvRForCjNvK0diUjV2b0FpMTd1N1R4QUtwWmR2cDZLeldZaExzUm1vRkNRc1hyU2NGeXNacGVPbEVrZUVDZ1lFQXltMjEKT0JjVFV3T3puL3VjbFFOaVVXQ0Uzeno2aFhLMnltZHZSUnNWRnZWdVpQbnVGZm5RQyt4c0RuNlZuK285QzVSQgpaanhRMTVlU1k1RnpGc3NRUDNiT0xXeFBzUVJLeVJWdUdaTHBBOFhmdlJWaDhNOUFOdXpkOHJobjNCb2Nmd2tiCjJQNTFHUVpGbTF5ZzJvWStqNDVYTSt5UllhbThGQ29FZWtGNlhjOENnWUIwNHBWaXBvL0RZZzdjQTdSaTBLMUEKQnE2Mlp0TTUwZm5GWFptckNBNmdOem5aS05RdFZMVjVtcVV0ZmRPOWdXK1B3bENBNXZKcnFsKzdoT1prMlFnaQpnTHl3eGJ6WXlZSHhNMGJBT1Y4dDRLeVFZTjZXT3prZXZMZFVERTBTdGxnUk1OOFZVM0VZaTc0T3Q1VDBlZjJZCkdLQkhoc3N5cUNiYkpCUkRMOHRJSVFLQmdEV09Yd0t2QURyWFlOK3oxeEtKcWFwMENkTnlNNm00MXVtb0FnVmIKaS9IZUQwNEIzZDdNa0NHSGRITkZSRnJod3pMY0Q0MTM2YitRWjNlV1ZNZTBBK0Yya2tmc1B3MUxZR25oRkpjSgppa0tvU0hDalJwMUtoK2ZBTlZ4eE0zRkZLMExrNnd3M0RrNEhuY1RqOWQ2NjQ3UmhhV3JnYlBwVXlPRGcyUHhyCmRHOTdBb0dCQUxTZDlqVlNaNTR5a3kzYmFFNm0yY1d4RldjVGlpOVlsUU9IQWN5MnNmZytSV3lNTEdvR2pWWXgKU2RmYWlOYWNKS21OeHFDNXo0YmMxek9xaWcxazRlTDJYQVNRRmVsUFB3aTgva1pRbXRqVk9kWDFXTzNCcjFlegpXdzltYUpkU3lPWmQwdmE5cFJnS2dtYXBqd0tQQ0RINFR0cEREamZFUEI5Vkgyd3Q4NCtjCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-secret
+    app.kubernetes.io/part-of: argocd
+  name: argocd-secret
+  namespace: argocd
+type: Opaque
 
 
 
@@ -115,6 +157,10 @@ data:
 # https://github.com/redhat-developer/gitops-operator/issues/277#issuecomment-1044881417
 
 # https://www.henryxieblogs.com/2021/04/tip-curl-23-failed-writing-body.html
+
+# login to argocd with argocd cli
+  # kubectl port-forward svc/argocd-server -n argocd 8080:443
+  # argocd login localhost:8080
 
 
 
