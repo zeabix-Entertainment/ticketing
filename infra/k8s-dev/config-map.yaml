@@ -5,3 +5,4 @@ metadata:
 data:
   # Configuration values can be set as key-value properties
   baseURL: 'http://z-commerce-dev.zeabix.com/'
+  NODE_TLS_REJECT_UNAUTHORIZED: '0'
