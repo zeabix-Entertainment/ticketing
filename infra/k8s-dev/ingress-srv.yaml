@@ -5,8 +5,12 @@ metadata:
   name:  ingress-service
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/use-regex: 'true'  
 spec:
+  tls:
+  - hosts:
+    - z-commerce-dev.zeabix.com
+    secretName: ingress-nginx-tls
   rules:
     - host: z-commerce-dev.zeabix.com
       http:
