@@ -42,6 +42,11 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
+    helm:
+      valueFiles:
+        - values.yaml
+
+
     path: helm
     repoURL: git@github.com:zeabix-Entertainment/z-DevSecOps.git
     targetRevision: feature-test
