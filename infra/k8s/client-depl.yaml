@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: client
-          image: zeabixdockerrepo/ticketing-client:${TAG_VERSION}
+      #   image: zeabixdockerrepo/ticketing-client:${TAG_VERSION}
+          image: zeabixdockerrepo/ticketing-client:80e83dd1177be61d8421560612da5b829a6d37cc
           envFrom:
             - configMapRef:
                 name: config-map-data

@@ -1,0 +1,192 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: burp-enterprise
+  labels:
+    name: burp-enterprise
+---
+# Create storage class for Azure file (AKS only)
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: my-azurefile
+  namespace: burp-enterprise
+provisioner: file.csi.azure.com # replace with "kubernetes.io/azure-file" if aks version is less than 1.21
+allowVolumeExpansion: true
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=0
+  - gid=0
+  - mfsymlinks
+  - cache=strict
+  - actimeo=30
+parameters:
+  skuName: standard_LRS
+---
+### create PVC used by burp-suite
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bsee-pvc
+  namespace: burp-enterprise
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: my-azurefile
+  resources:
+    requests:
+      storage: 600Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: burp-enterprise-depl-web-server
+  namespace: burp-enterprise
+# app.kubernetes.io/name: web-server
+# app.kubernetes.io/component: server
+spec:
+  selector:
+    app.portswigger.net/name: burp-enterprise-depl-web-server
+    app.portswigger.net/ingress: web-server
+  ports:
+    - name: https
+      protocol: TCP
+      port: 8443
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: burp-ingress
+  namespace: burp-enterprise
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  rules:
+  - host: burp.zeabix.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: burp-enterprise-depl-web-server
+            port: 
+              name: https
+  tls:
+  - hosts:
+    - burp.zeabix.com
+    secretName: burp-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  namespace: burp-enterprise
+  labels:
+    app: mysql
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7
+          resources:
+            limits:
+              cpu: 300m
+              memory: 256Mi
+            requests:
+              cpu: 300m
+              memory: 256Mi
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: ROOT_PASSWORD
+          volumeMounts:
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysqlg
+       
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim2
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim2
+  namespace: burp-enterprise
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: my-azurefile
+  resources:
+    requests:
+      storage: 600Mi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secrets
+  namespace: burp-enterprise
+type: Opaque
+data:
+  ROOT_PASSWORD: IyMxUTJ3M2U0ciMj
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: burp-enterprise
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+
+
+  # steps: 1. create namespace 
+  #        2. deploy pvc
+  #        3. deploy helm.
+  #        4. deploy service
+  #        5. deploy ingress
+  # download helm chart from official website frist. 
+  # helm install -n burp-enterprise burp-enterprise-depl ./burp_enterprise
+  # Also, don't forget to create TLS secret for burp. In this case, tls secret named "burp-secret" was created by wildcard certificate (*.zeabix.com)
+       # kubectl create secret tls burp-secret --key /home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.pem --cert /home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.crt -nburp-enterprise 
+
+  # to-do modify helm for the completion of the deployment.
+
+  # Setup DB (MaySQL)
+  # https://portswigger.net/burp/documentation/enterprise/getting-started/setup-ext-db
+  #
+  # CREATE DATABASE burp_enterprise CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
+  # CREATE USER 'burp_enterprise'@'%' IDENTIFIED BY '********';
+  # CREATE USER 'burp_agent'@'%' IDENTIFIED BY '********';
+  # GRANT ALL PRIVILEGES ON burp_enterprise.* TO 'burp_enterprise'@'%' WITH GRANT OPTION;
+  #
+  # - URL link
+  # jdbc:mysql://<host>:3306/burp_enterprise
+  # jdbc:mysql://mysql.burp-enterprise.cluster.local:3306/burp_enterprise
+
+  # on GUI setup - use 'burp_enterprise' account for both fields. DO NOT use burp_agent
+
+
+
+

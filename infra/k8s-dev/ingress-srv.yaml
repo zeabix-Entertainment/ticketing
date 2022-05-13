@@ -43,3 +43,6 @@ spec:
                 name: orders-srv
                 port: 
                   number: 3000
+
+# Don't forget to create tls secret from file
+# kubectl create secret tls ingress-nginx-tls --key=/home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.pem --cert=/home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.crt
