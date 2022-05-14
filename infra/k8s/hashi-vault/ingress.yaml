@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hashi-vault-ingress
+  namespace: vault
+  annotations:
+    kubernetes.io/ingress.class: nginx
+#   nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+#   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  rules:
+  - host: hashi-vault.zeabix.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vault
+            port: 
+              name: http
+  tls:
+  - hosts:
+    - hashi-vault.zeabix.com
+    secretName: hashi-vault-secret
+
+
+# Don't forget to create tls secret from file
+# kubectl create secret tls hashi-vault-secret -nvault --key=/home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.pem --cert=/home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.crt
+
+
+#  The Vault server can be reached via the CLI and the web UI outside of the Kubernetes cluster if the Vault service running on port 8200 is forwarded.
+# install vault to get vault cli
+# https://www.vaultproject.io/downloads
+
+# login using the following command
+# vault login -address=https://hashi-vault.zeabix.com -tls-skip-verify 
+
+# or specify TLS certificate 
+# vault login -address=https://hashi-vault.zeabix.com -ca-cert=/home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.crt
+
+
+# and then put the root token
+
+#kaiadmin@KAMONWAT-NB:~/hashi-vault$ cat /home/kaiadmin/hashi-vault/cluster-keys.json
+#{
+#  "unseal_keys_b64": [
+#    "qrQm6VaSXXHgMKXjGCwphfRQycvFBNlmiHWHdkE7g5g="
+#  ],
+#  "unseal_keys_hex": [
+#    "aab426e956925d71e030a5e3182c2985f450c9cbc504d96688758776413b8398"
+#  ],
+#  "unseal_shares": 1,
+#  "unseal_threshold": 1,
+#  "recovery_keys_b64": [],
+#  "recovery_keys_hex": [],
+#  "recovery_keys_shares": 5,
+#  "recovery_keys_threshold": 3,
+#  "root_token": "s.mKa4qJbTAMb9LOPTjvqL2tHy"
+#}

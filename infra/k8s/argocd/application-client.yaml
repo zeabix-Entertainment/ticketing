@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ticketing-client
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      valueFiles:
+        - values.yaml
+    path: helm
+    repoURL: git@github.com:zeabix-Entertainment/z-DevSecOps.git
+    targetRevision: feature-test
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+
+# don't forget to create pull secret. This will allows argocd to pull secret from docker hub.
+# kubectl create secret docker-registry zeabix-docker-repo-secret -nargocd \
+#  --docker-server=docker.io \
+#  --docker-username=zeabixdockerrepo \
+#  --docker-password=**** \
+#  --docker-email=kamonwat.s@zeabix.com
+
+# Create Repository with ssh key on UI 
+# using url as git: git@github.com:zeabix-Entertainment/z-DevSecOps.git
+# for ssh private key just follow: # https://stackoverflow.com/questions/71500791/eclipse-git-youre-using-an-rsa-key-with-sha-1-which-is-no-longer-allowed-pl

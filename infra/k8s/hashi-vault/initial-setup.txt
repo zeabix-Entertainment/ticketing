@@ -1,0 +1,10 @@
+# follow the procedure listed in the following URL:
+# https://learn.hashicorp.com/tutorials/vault/kubernetes-minikube
+
+# However, make sure that in step "Create a Kubernetes authentication role, named webapp, that connects the Kubernetes service account name and webapp policy."
+# please specify the right namespace which is the namepace that application is located (it might not be "default")
+# vault write auth/kubernetes/role/webapp \
+#        bound_service_account_names=vault \
+#        bound_service_account_namespaces=vault \
+#        policies=webapp \
+#        ttl=24h
