@@ -9,3 +9,80 @@
 #        kubernetes_host="$K8S_HOST" \
 #        kubernetes_ca_cert="$SA_CA_CRT" \
 #        issuer="https://kubernetes.default.svc.cluster.local"
+# 
+# # The token_reviewer_jwt and kubernetes_ca_cert are mounted to the container by Kubernetes when it is created.
+#  kubernetes_host is a kube host that wants to authenticate to vault. 
+
+# 4. Test by:
+# vault write auth/kubernetes/login role=spinnaker jwt=$(kubectl exec -it auth-depl-6cc6bd75b4-s54gn -- cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+
+# Example: SA can be specified to particular namesapce (in thise case, specified to default).
+vault write auth/kubernetes/role/webapp \
+        bound_service_account_names=vault \
+        bound_service_account_namespaces=default \
+        policies=webapp \
+        ttl=24h
+
+
+# When use bound_service_account_names=default every works. But if we use other service account (in this case vault-auth which created in the beginning of the step),
+# it does not work.
+
+vault write auth/kubernetes/role/spinnaker \
+        bound_service_account_names=default \
+        bound_service_account_namespaces=default \
+        policies=spinnaker-kv-ro \
+        ttl=1440h
+
+# So it seems POD uses JWT from "default" serviceaccount.  # Confirmed:
+
+vault write auth/kubernetes/login role=spinnaker jwt=$(kubectl exec -it auth-depl-6cc6bd75b4-s54gn -- cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+WARNING! The following warnings were returned from Vault:
+
+  * TTL of "1440h" exceeded the effective max_ttl of "768h"; TTL value is
+  capped accordingly
+
+Key                                       Value
+---                                       -----
+token                                     s.cDXRSsen12y1kVlz0PnsQw2V
+token_accessor                            Sg5xHFLFUUGBvFFzH2hkfS2o
+token_duration                            768h
+token_renewable                           true
+token_policies                            ["default" "spinnaker-kv-ro"]
+identity_policies                         []
+policies                                  ["default" "spinnaker-kv-ro"]
+token_meta_role                           spinnaker
+token_meta_service_account_name           default
+token_meta_service_account_namespace      default
+token_meta_service_account_secret_name    n/a
+token_meta_service_account_uid            1ee78884-9ca0-4b70-aaee-5cf27144935e
+
+#################
+
+# However, if we mannually add bound_service_account_names as vault-auth to vault-auth by UI. and then exract token of vault-auth and use this JWT to authen it works.
+#  kubectl get serviceaccount vault-auth -o yaml  (you will get secret name, in this case: vault-auth-token-2zzxb )
+#  kubectl get secret  vault-auth-token-2zzxb -o yaml   (you will see token)
+# vault write auth/kubernetes/login role=spinnaker jwt=$(echo "token from above step"| base64 -d)
+#
+
+# with mannual extract JWT of vault-auth, comfirmed we use vault-auth as service_account_name.
+
+WARNING! The following warnings were returned from Vault:
+
+  * TTL of "1440h" exceeded the effective max_ttl of "768h"; TTL value is
+  capped accordingly
+
+Key                                       Value
+---                                       -----
+token                                     s.Iv397Wm1zLPOl8xooVxP5mcx
+token_accessor                            4fQ73fYVCV0zGuBH2xnSdnjV
+token_duration                            768h
+token_renewable                           true
+token_policies                            ["default" "spinnaker-kv-ro"]
+identity_policies                         []
+policies                                  ["default" "spinnaker-kv-ro"]
+token_meta_service_account_name           vault-auth
+token_meta_service_account_namespace      default
+token_meta_service_account_secret_name    vault-auth-token-2zzxb
+token_meta_service_account_uid            e7b5462e-9870-4f0d-9f1c-7d0cba39e9a4
+token_meta_role                           spinnaker
