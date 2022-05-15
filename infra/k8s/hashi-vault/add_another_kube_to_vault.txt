@@ -1,0 +1,11 @@
+# follow this step https://docs.armory.io/armory-enterprise/armory-admin/secrets/vault-k8s-configuration/
+# but, modify the following
+
+# 1. change rbac.authorization.k8s.io/v1beta1 to rbac.authorization.k8s.io/v1
+
+# 2. Add issuer. 
+#   vault write auth/kubernetes/config \
+#        token_reviewer_jwt="$SA_JWT_TOKEN" \
+#        kubernetes_host="$K8S_HOST" \
+#        kubernetes_ca_cert="$SA_CA_CRT" \
+#        issuer="https://kubernetes.default.svc.cluster.local"
