@@ -1,5 +1,5 @@
 # follow this step https://docs.armory.io/armory-enterprise/armory-admin/secrets/vault-k8s-configuration/
-# but, modify the following
+# but, modify the following:
 
 # 1. change rbac.authorization.k8s.io/v1beta1 to rbac.authorization.k8s.io/v1
 
