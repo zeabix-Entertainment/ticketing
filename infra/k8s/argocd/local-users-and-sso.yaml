@@ -1,7 +1,7 @@
 # add local users, however we need to set password for these users by argocd cli or put their passwords in "argocd-secret" secret with base64 encoded.
 # https://medium.com/geekculture/create-a-new-user-in-argocd-using-the-cli-and-configmap-8cbb27cf5904
 
-# SSO with Azure Active Directory (however there is a bug, see below URL for solution.)
+# Manual for OIDC with AAD.
 # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/microsoft/#azure-ad-app-registration-auth-using-oidc
 #
 # there is a bug with Azure App registartion see workaround here:

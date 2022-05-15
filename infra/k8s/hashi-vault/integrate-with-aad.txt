@@ -1,0 +1,18 @@
+# https://learn.hashicorp.com/tutorials/vault/oidc-auth-azure?in=vault/auth-methods
+
+# Note that Vault server does not use 8250. It is listened to temporarily by the Vault CLI , only whilst an instance of vault login -method=oidc is running. 
+#
+#
+# https://github.com/hashicorp/vault/issues/15310
+
+# Note that the reply url of localhost is correct as Azure will reply to Vault CLI at localhost.
+# #{VAULT_ADDR} is the URL of VAULT UI. For example: https://hashi-vault.zeabix.com
+
+
+# $ export AD_VAULT_APP_ID=$(az ad app create \
+#   --display-name ${AD_AZURE_DISPLAY_NAME} \
+#   --reply-urls "http://localhost:8250/oidc/callback" \
+#   "${VAULT_ADDR}/ui/vault/auth/oidc/oidc/callback" | \
+#   jq -r '.appId')
+
+# when done, both UI and CLI are able to login with AAD user.

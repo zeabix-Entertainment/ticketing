@@ -1,0 +1,54 @@
+# follow the procedure listed in the following URL:
+# https://learn.hashicorp.com/tutorials/vault/kubernetes-minikube
+
+# TO DO: as the procedure for the installation above use Consul as storage. This causes more complex for day-2 operation e.g. backup/restore.
+# So, need to explore integrated storage, see link below:
+# https://learn.hashicorp.com/tutorials/vault/kubernetes-google-cloud-gke
+
+# TO DO: as the procedure for the instalation above does not enable end to end TLS. 
+# See this: https://www.vaultproject.io/docs/platform/k8s/helm/examples/standalone-tls
+
+# However, make sure that in step "Create a Kubernetes authentication role, named webapp, that connects the Kubernetes service account name and webapp policy."
+# please specify the right namespace which is the namepace that application is located (it might not be "default")
+# vault write auth/kubernetes/role/webapp \
+#        bound_service_account_names=vault \
+#        bound_service_account_namespaces=vault \
+#        policies=webapp \
+#        ttl=24h
+
+
+#################
+#  The Vault server can be reached via the CLI and the web UI outside of the Kubernetes cluster if the Vault service running on port 8200 is forwarded.
+# install vault to get vault cli
+# https://www.vaultproject.io/downloads
+
+# login using the following command
+# vault login -address=https://hashi-vault.zeabix.com -tls-skip-verify 
+
+# or specify TLS certificate 
+# vault login -address=https://hashi-vault.zeabix.com -ca-cert=/home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.crt
+# and then put the root token
+
+# to shorten the command, just export env variable
+#  export VAULT_ADDR=https://hashi-vault.zeabix.com
+#  export  VAULT_CACERT=/home/kaiadmin/zeabix-wildcard-ssl/STAR_zeabix_com.crt   
+#  so command is shortened to: vault login  -method=oidc
+
+
+# how to get root token
+#kaiadmin@KAMONWAT-NB:~/hashi-vault$ cat /home/kaiadmin/hashi-vault/cluster-keys.json
+#{
+#  "unseal_keys_b64": [
+#    "qrQm6VaSXXHgMKXjGCwphfRQycvFBNlmiHWHdkE7g5g="
+#  ],
+#  "unseal_keys_hex": [
+#    "aab426e956925d71e030a5e3182c2985f450c9cbc504d96688758776413b8398"
+#  ],
+#  "unseal_shares": 1,
+#  "unseal_threshold": 1,
+#  "recovery_keys_b64": [],
+#  "recovery_keys_hex": [],
+#  "recovery_keys_shares": 5,
+#  "recovery_keys_threshold": 3,
+#  "root_token": "s.mKa4qJbTAMb9LOPTjvqL2tHy"
+#}
