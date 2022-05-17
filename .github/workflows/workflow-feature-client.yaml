@@ -19,8 +19,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+ 
   Trivy:
-    name: Trivy [Base image/Dependency scan]
+    name: Trivy 
     runs-on: ubuntu-18.04
     steps:
       - name: Prepare
