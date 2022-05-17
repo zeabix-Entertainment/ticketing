@@ -36,7 +36,7 @@ jobs:
 
           cd $APP_DIR && docker build -t zeabixdockerrepo/$APP_NAME:test1 .
         env:
-          WORFLOW_NAME: ${{github.workflow}}
+          WORKFLOW_NAME: ${{github.workflow}}
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
