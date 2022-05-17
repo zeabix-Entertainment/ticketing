@@ -33,10 +33,10 @@ jobs:
           echo "APP_ENV : ${strarr[0]} "  
           echo "APP_NAME : ${strarr[1]}" 
           echo "APP_DIR : ${strarr[2]} "
-          
-          echo "APP_ENV=${strarr[0]}" 
-          echo "APP_NAME=${strarr[1]}" 
-          echo "APP_DIR=${strarr[2]}" 
+
+          echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
+          echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
+          echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
 
           cd $APP_DIR && docker build -t zeabixdockerrepo/$APP_NAME:test1 .
         env:
