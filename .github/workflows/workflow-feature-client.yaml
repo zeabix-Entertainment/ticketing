@@ -43,15 +43,15 @@ jobs:
       - name: Build an image from Dockerfile
         run: |
 
-          cd $APP_DIR && docker build -t zeabixdockerrepo/$APP_NAME:test1 .
+          cd $APP_DIR && docker build -t zeabixdockerrepo/$APP_NAME:${{ github.sha }} .
      
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'zeabixdockerrepo/${{env.APP_NAME}}:test1'
+          image-ref: 'zeabixdockerrepo/${{env.APP_NAME}}:${{ github.sha }}'
           format: 'table'
           exit-code: '0'
-          ignore-unfixed: true
+          ignore-unfixed: false
           vuln-type: 'os,library'
           severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
 
