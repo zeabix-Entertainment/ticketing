@@ -1,0 +1,17 @@
+---
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: external-vault
+spec:
+    type: ExternalName
+    externalName: hashi-vault.zeabix.com
+    ports:
+    - protocol: TCP
+      port: 8200
+# selector: {}
+
+# A service creates an abstraction around pods 
+# or an external service. When an application running 
+# in a pod requests the service, that request is routed 
+# to the endpoints that share the service name.

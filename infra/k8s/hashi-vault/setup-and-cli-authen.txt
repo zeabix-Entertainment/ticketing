@@ -52,3 +52,11 @@
 #  "recovery_keys_threshold": 3,
 #  "root_token": "s.mKa4qJbTAMb9LOPTjvqL2tHy"
 #}
+
+
+########
+#https://stackoverflow.com/questions/69206932/vault-login-token-expiring-unexpectedly
+
+First, child token cannot outlive it's parent. If the parent token expires, the child token regardless of it's TTL left, will also expire. If you need the token to outlive its parent you need to provide -orphan param when creating the token.
+Second, renewable does not mean, you can renew forever, you can keep extending the life of a token UP TO the "max ttl". But that's it. The token will expire. "Renew" does not get you a now token, it simply extends the life of the current TTL. You still cannot get past the max-ttl age limit. My suggestion is not to use service tokens, switch to batch tokens (still will run into maxttl issues) or even better an auth system (approle for example) to get your apps access.
+* If you're in secure environment (kub pods, or locked VM for example) consider using the Vault Agent. It'll help you to keep your session alive.

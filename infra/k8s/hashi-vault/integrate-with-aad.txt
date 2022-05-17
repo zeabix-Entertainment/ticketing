@@ -1,8 +1,6 @@
 # https://learn.hashicorp.com/tutorials/vault/oidc-auth-azure?in=vault/auth-methods
 
 # Note that Vault server does not use 8250. It is listened to temporarily by the Vault CLI , only whilst an instance of vault login -method=oidc is running. 
-#
-#
 # https://github.com/hashicorp/vault/issues/15310
 
 # Note that the reply url of localhost is correct as Azure will reply to Vault CLI at localhost.

@@ -86,3 +86,11 @@ token_meta_service_account_namespace      default
 token_meta_service_account_secret_name    vault-auth-token-2zzxb
 token_meta_service_account_uid            e7b5462e-9870-4f0d-9f1c-7d0cba39e9a4
 token_meta_role                           spinnaker
+
+
+##################################################################
+  Ok it seems we need to specify in manifest file of pod/deployment. As below, it specifes serviceaccount of pod as default.
+  
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default

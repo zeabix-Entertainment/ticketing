@@ -1,0 +1,105 @@
+# Ref: https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/demos/standard-walkthrough/
+
+# Ref: https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/sync-with-k8s-secrets/
+# Don't forget to turn on secrets-store-csi-driver.syncSecret.enabled=true (by helm)
+   # helm upgrade csi csi-secrets-store-provider-azure/csi-secrets-store-provider-azure --set secrets-store-csi-driver.syncSecret.enabled=true
+
+
+cat <<EOF | kubectl apply -f -
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: azure-kvname
+  namespace: default
+spec:
+  provider: azure
+  secretObjects:                              # [OPTIONAL] SecretObject defines the desired state of synced K8s secret objects
+  - data:
+    - key: username                           # data field to populate - must match with key in env section of POD.
+      objectName: secret1                     # name of the mounted content to sync. this could be the object name or the object alias
+    - key: username2                           # data field to populate - must match with key in env section of POD.
+      objectName: secret2
+    secretName: jwt-secret33                  # name of the Kubernetes Secret object (no need to create upfront, it will be created automatically)
+    type: Opaque    
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "false"
+    userAssignedIdentityID: ""
+    keyvaultName: "${KEYVAULT_NAME}"
+    objects: |
+      array:
+        - |
+          objectName: secret1              
+          objectType: secret
+          objectVersion: ""
+        - |
+          objectName: secret2              
+          objectType: secret
+          objectVersion: ""
+    tenantId: "${TENANT_ID}"
+EOF
+
+
+----------------------
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-deployment
+  labels:
+    app: busybox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: busybox
+          image: k8s.gcr.io/e2e-test-images/busybox:1.29
+          command:
+            - "/bin/sleep"
+            - "10000"
+          env:
+            - name: SECRET_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret33
+                  key: username
+            - name: SECRET_USERNAME2
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret33
+                  key: username2
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: azure-kvname
+            nodePublishSecretRef:
+              name: secrets-store-creds
+EOF
+
+
+
+# test mount volume:
+## show secrets held in secrets-store
+kubectl exec busybox-secrets-store-inline -- ls /mnt/secrets-store/
+
+## print a test secret held in secrets-store
+kubectl exec busybox-secrets-store-inline -- cat /mnt/secrets-store/secret1
+
+
+# install AAD pod identity
+# https://azure.github.io/aad-pod-identity/docs/getting-started/installation/
