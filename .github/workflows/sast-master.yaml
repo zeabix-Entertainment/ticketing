@@ -10,18 +10,11 @@ on:
         type: string
 
     secrets:
-      docker_username:
+      github_token:
         required: true
-      docker_password:
+      sonar_token:
         required: true
-        
-    outputs:
-      docker_tag:
-        description: "docker_tag for further deployment stage"
-        value: ${{jobs.build.outputs.docker_tag }}
-      env_flag:
-        description: "env_flag"
-        value: ${{ jobs.build.outputs.env_flag }}
+
 env:
   WORKFLOW_NAME: ${{inputs.workflow_name}}
     
@@ -37,8 +30,8 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.sonar_token }}
  
   Trivy:
     name: Trivy 
@@ -55,8 +48,8 @@ jobs:
           echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
-        env:
-          WORKFLOW_NAME: ${{github.workflow}}
+#       env:
+#         WORKFLOW_NAME: ${{github.workflow}}
 
       - name: Checkout code
         uses: actions/checkout@v2
