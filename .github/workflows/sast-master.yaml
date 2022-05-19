@@ -1,5 +1,5 @@
 # kaitest1
-name: build-sast
+name: sast-master
 
 on:
   workflow_call:
