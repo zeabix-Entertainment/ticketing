@@ -1,0 +1,79 @@
+# kaitest1
+name: build-sast
+
+on:
+  workflow_call:
+  
+    inputs:
+      workflow_name:
+        required: true
+        type: string
+
+    secrets:
+      docker_username:
+        required: true
+      docker_password:
+        required: true
+        
+    outputs:
+      docker_tag:
+        description: "docker_tag for further deployment stage"
+        value: ${{jobs.build.outputs.docker_tag }}
+      env_flag:
+        description: "env_flag"
+        value: ${{ jobs.build.outputs.env_flag }}
+env:
+  WORKFLOW_NAME: ${{inputs.workflow_name}}
+    
+jobs:
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+ 
+  Trivy:
+    name: Trivy 
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Prepare
+        id: Prepare
+        run: |
+          echo $WORKFLOW_NAME
+          strarr=(${WORKFLOW_NAME//"_"/ })
+          echo "APP_ENV : ${strarr[0]} "  
+          echo "APP_NAME : ${strarr[1]}" 
+          echo "APP_DIR : ${strarr[2]} "  
+          echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
+          echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
+          echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
+        env:
+          WORKFLOW_NAME: ${{github.workflow}}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build an image from Dockerfile
+        run: |
+
+          cd $APP_DIR && docker build -t zeabixdockerrepo/$APP_NAME:${{ github.sha }} .
+     
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'zeabixdockerrepo/${{env.APP_NAME}}:${{ github.sha }}'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: false
+          vuln-type: 'os,library'
+          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+
+ 
