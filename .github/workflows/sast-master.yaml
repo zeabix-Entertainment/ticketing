@@ -4,14 +4,14 @@ name: sast-master
 on:
   workflow_call:
   
-    inputs:
-      workflow_name:
-        required: true
-        type: string
+#   inputs:
+#     workflow_name:
+#       required: true
+#       type: string
 
     secrets:
 #     github_token:
-#       required: true
+#     required: true
       sonar_token:
         required: true
 
@@ -48,8 +48,8 @@ jobs:
           echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
-#       env:
-#         WORKFLOW_NAME: ${{github.workflow}}
+       env:
+         WORKFLOW_NAME: ${{github.workflow}}
 
       - name: Checkout code
         uses: actions/checkout@v2
