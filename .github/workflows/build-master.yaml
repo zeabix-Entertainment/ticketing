@@ -23,7 +23,7 @@ on:
         description: "env_flag"
         value: ${{ jobs.build.outputs.env_flag }}
 env:
-  WORKFLOW_NAME: ${{inputs.workflow_name}}
+  WORKFLOW_NAME1: ${{inputs.workflow_name}}
     
 jobs:
 
@@ -46,6 +46,8 @@ jobs:
           echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
           echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
           echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
+        env:
+          WORKFLOW_NAME: ${{github.workflow}}
 
       - uses: actions/checkout@v2
       - name: Set tag env for docker tag
