@@ -16,8 +16,8 @@ jobs:
 
   build:
     uses: ./.github/workflows/build-master.yaml
-    with: 
-      workflow_name: ${{github.workflow}}
+#   with: 
+#     workflow_name: ${{github.workflow}}
     secrets:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}

@@ -4,10 +4,10 @@ name: build-master
 on:
   workflow_call:
   
-    inputs:
-      workflow_name:
-        required: true
-        type: string
+#   inputs:
+#     workflow_name:
+#       required: true
+#       type: string
 
     secrets:
       docker_username:
@@ -22,8 +22,8 @@ on:
       env_flag:
         description: "env_flag"
         value: ${{ jobs.build.outputs.env_flag }}
-env:
-  WORKFLOW_NAME1: ${{inputs.workflow_name}}
+#env:
+#  WORKFLOW_NAME1: ${{inputs.workflow_name}}
     
 jobs:
 
