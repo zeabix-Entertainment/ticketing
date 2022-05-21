@@ -1,4 +1,4 @@
-# kaitest1
+# kaitest11
 name: sast-master
 
 on:
@@ -15,8 +15,8 @@ on:
       sonar_token:
         required: true
 
-env:
-  WORKFLOW_NAME: ${{inputs.workflow_name}}
+#env:
+#  WORKFLOW_NAME: ${{inputs.workflow_name}}
     
 jobs:
 
