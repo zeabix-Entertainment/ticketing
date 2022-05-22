@@ -1,4 +1,4 @@
-# kaitest1
+# kaitest11
 name: build-master
 
 on:
@@ -105,6 +105,7 @@ jobs:
 
 
 # https://github.com/actions/checkout
+#  yq e '.client.tag="kai1"' -i ./values.yaml
 
      
 
