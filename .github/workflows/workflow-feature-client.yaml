@@ -6,6 +6,7 @@ on:
     branches:
       - feature-*
 jobs:
+## SAST---------------------------------------------------------------------------------
   sast:
     uses: ./.github/workflows/sast-master.yaml
 #   with: 
@@ -13,6 +14,16 @@ jobs:
     secrets:
 #     github_token: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
       sonar_token: ${{ secrets.SONAR_TOKEN }}
+## -------------------------------------------------------------------------------------
+
+## DAST --------------------------------------------------------------------------------
+  dast:
+    uses: ./.github/workflows/dast-master.yaml
+
+
+
+## -------------------------------------------------------------------------------------
+
 
   build:
     uses: ./.github/workflows/build-master.yaml
