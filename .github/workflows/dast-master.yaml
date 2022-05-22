@@ -54,4 +54,10 @@ jobs:
 
 # How to schedule owasp-zap
 # https://www.zaproxy.org/blog/2020-04-09-automate-security-testing-with-zap-and-github-actions/
+
+# Detail of built-in-configuration
+# https://portswigger.net/burp/documentation/desktop/scanning/built-in-configurations
+
+# How to enable embedded browser (powered browser) for Burp Suite
+# https://portswigger.net/burp/documentation/enterprise/reference/browser-powered
  
