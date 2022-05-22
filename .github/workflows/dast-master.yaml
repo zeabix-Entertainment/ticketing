@@ -37,10 +37,15 @@ jobs:
       - name: execute
         run: |
           java -jar ./burp-ci-driver-2021.3-162.jar $BURP_URL \
-          --api-key=m7mRSY1MVo4MOaSCeV4LRwmPcUuHC1yB --site-id=1 --min-severity=high \
-          --min-confidence=certain --report-file=scan-report.html --report-type=summary
+          --api-key=$API_KEY --site-id=$SITE_ID --min-severity=$MIN_SERV \
+          --min-confidence=$MIN_CON --report-file=scan-report.html --report-type=$REPORT_TYPE
         env:
           BURP_URL: "http://20.24.144.124:8080"
+          API_KEY:  "m7mRSY1MVo4MOaSCeV4LRwmPcUuHC1yB"
+          SITE_ID: "1"
+          MIN_SERV: "high"
+          MIN_CON: "certain"
+          REPORT_TYPE: "summary"
 
 
 
