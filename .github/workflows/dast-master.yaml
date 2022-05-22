@@ -28,6 +28,8 @@ jobs:
         with:
           target: 'https://z-commerce-dev.zeabix.com/'
 
+# https://www.lunavi.com/blog/using-the-owasp-zap-baseline-scan-github-action
 
-
+# How to schedule owasp-zap
+# https://www.zaproxy.org/blog/2020-04-09-automate-security-testing-with-zap-and-github-actions/
  
