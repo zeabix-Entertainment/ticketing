@@ -1,0 +1,112 @@
+# kaitest1
+name: build-master
+
+on:
+  workflow_call:
+  
+#   inputs:
+#     workflow_name:
+#       required: true
+#       type: string
+
+    secrets:
+      docker_username:
+        required: true
+      docker_password:
+        required: true
+        
+    outputs:
+      docker_tag:
+        description: "docker_tag for further deployment stage"
+        value: ${{jobs.build.outputs.docker_tag }}
+      env_flag:
+        description: "env_flag"
+        value: ${{ jobs.build.outputs.env_flag }}
+#env:
+#  WORKFLOW_NAME1: ${{inputs.workflow_name}}
+    
+jobs:
+
+  build:
+    name: ${{github.ref}}
+    runs-on: ubuntu-latest
+    outputs:
+      docker_tag: ${{ steps.set_docker_tag.outputs.docker_tag }}
+      env_flag: ${{ steps.set_docker_tag.outputs.env_flag }}
+    steps:
+      - name: Prepare
+        id: Prepare
+        run: |
+          echo $WORKFLOW_NAME
+          echo "github.workflow : ${{github.workflow}}"
+          strarr=(${WORKFLOW_NAME//"_"/ })
+          echo "APP_ENV : ${strarr[0]} "  
+          echo "APP_NAME : ${strarr[1]}" 
+          echo "APP_DIR : ${strarr[2]} "  
+          echo "APP_ENV=${strarr[0]}" >> $GITHUB_ENV
+          echo "APP_NAME=${strarr[1]}" >> $GITHUB_ENV
+          echo "APP_DIR=${strarr[2]}" >> $GITHUB_ENV
+        env:
+          WORKFLOW_NAME: ${{github.workflow}}
+
+      - uses: actions/checkout@v2
+      - name: Set tag env for docker tag
+        id: set_docker_tag
+        run: |
+          if [[ $APP_ENV == "DEV" ]] 
+          then
+            echo "TAG_VERSION=${{ github.sha }}" >> $GITHUB_ENV
+            echo $GITHUB_ENV
+            export TAG_VERSION_TEMP=${{ github.sha }}
+ 
+          elif [[ $APP_ENV == "RELEASE" ]]   
+          then   
+            echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+            export TAG_VERSION_TEMP=${GITHUB_REF#refs/*/}
+            echo ${GITHUB_REF#refs/*/}            
+            echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
+            cat release_candidate_tag.txt
+          fi
+          echo "::set-output name=docker_tag::$TAG_VERSION_TEMP"
+          echo "::set-output name=env_flag::${{inputs.env_flag}}"
+         
+          echo "$TAG_VERSION_TEMP"
+          echo "$TAG_VERSION_TEMP"
+
+      - name: Build Docker Image with proper tag. 
+        run:  | 
+          cd $APP_DIR && docker build -t zeabixdockerrepo/$APP_NAME:${TAG_VERSION} .
+          echo "$TAG_VERSION"
+
+      - name: Docker Registry login
+        run:  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        
+        env:
+          DOCKER_USERNAME: ${{ secrets.docker_username }}
+          DOCKER_PASSWORD: ${{ secrets.docker_password }}
+      - name: Docker push
+        run:  |
+          docker push zeabixdockerrepo/$APP_NAME:$TAG_VERSION
+          echo "$TAG_VERSION"
+      
+      - name: Create an artifact for docker tag for prod. 
+        if: "contains(github.ref, 'tags')"
+        run: |
+           echo ${GITHUB_REF#refs/*/} > release_candidate_tag.txt 
+           cat release_candidate_tag.txt
+
+      - name: Upload git tag version for release candidate
+        if:   ${{env.APP_ENV  == 'RELEASE'}}
+      ##if: "contains(github.ref, 'tags')"
+        uses: actions/upload-artifact@v3
+        with:
+          name: release_candidate_tag
+          path: release_candidate_tag.txt 
+
+
+# https://github.com/actions/checkout
+#  yq e '.client.tag="kai1"' -i ./values.yaml
+
+     
+
+
