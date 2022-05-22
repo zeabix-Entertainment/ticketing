@@ -11,9 +11,9 @@ jobs:
     uses: ./.github/workflows/sast-master.yaml
 #   with: 
 #     workflow_name: ${{github.workflow}}
-    secrets:
+#   secrets:
 #     github_token: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-      sonar_token: ${{ secrets.SONAR_TOKEN }}
+#     sonar_token: ${{ secrets.SONAR_TOKEN }}
 ## -------------------------------------------------------------------------------------
 
 ## DAST --------------------------------------------------------------------------------
