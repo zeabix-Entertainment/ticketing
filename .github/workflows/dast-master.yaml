@@ -1,4 +1,4 @@
-# kaitest1134
+# kaitest11345
 name: dast-master
 
 on:
@@ -72,4 +72,10 @@ jobs:
 #     https://www.linuxcapable.com/how-to-install-google-chrome-on-ubuntu-20-04/
 #
 # https://portswigger.net/burp/documentation/enterprise/reference/browser-powered
+
+
+# Burp Suite VM Specification
+#
+# Base with 1scaner (single machine installation): 8vCPU, 24GB. 30GB Disk
+# https://portswigger.net/burp/documentation/enterprise/getting-started/system-requirements
  
