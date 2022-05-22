@@ -78,4 +78,7 @@ jobs:
 #
 # Base with 1scaner (single machine installation): 8vCPU, 24GB. 30GB Disk
 # https://portswigger.net/burp/documentation/enterprise/getting-started/system-requirements
+#
+# Don't forget to attach proper disk size as well. See Disk requirement in the URL above.
+# for Azure VM, we can use Azure portal to expand OS disk and it will automatically expand root partition.
  
