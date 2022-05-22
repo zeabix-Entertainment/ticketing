@@ -36,9 +36,9 @@ jobs:
         run: wget https://zeabixblob1.blob.core.windows.net/blob-container/burp-ci-driver-2021.3-162.jar
       - name: execute
         run: |
-          java -jar ./burp-ci-driver-2021.3-162.jar http://20.24.144.124:8080 \ 
-          --api-key=m7mRSY1MVo4MOaSCeV4LRwmPcUuHC1yB --site-id=1 --min-severity=high --min-confidence=certain \
-          --report-file=scan-report.html --report-type=summary
+          java -jar ./burp-ci-driver-2021.3-162.jar http://20.24.144.124:8080 \
+          --api-key=m7mRSY1MVo4MOaSCeV4LRwmPcUuHC1yB --site-id=1 --min-severity=high \
+          --min-confidence=certain --report-file=scan-report.html --report-type=summary
 
 
 
