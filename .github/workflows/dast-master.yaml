@@ -19,11 +19,15 @@ on:
 #  WORKFLOW_NAME: ${{inputs.workflow_name}}
     
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    - name: ZAP Scan
-      uses: zaproxy/action-full-scan@v0.3.0
-      with:
-       target: 'https://z-commerce-dev.zeabix.com/'
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: owasp-zap
+    steps:
+      - name: execute
+        uses: zaproxy/action-full-scan@v0.3.0
+        with:
+          target: 'https://www.z-commerce-dev.zeabix.com/'
+
+
 
  
