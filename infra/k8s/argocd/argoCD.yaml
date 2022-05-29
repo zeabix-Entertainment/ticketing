@@ -155,8 +155,8 @@ type: Opaque
        # https://stackoverflow.com/questions/71500791/eclipse-git-youre-using-an-rsa-key-with-sha-1-which-is-no-longer-allowed-pl
 
 #    Need to change default path to /argocd.
-       # https://stackoverflow.com/questions/69814886/blank-page-in-kubernetes-ingress
-       
+#       # https://stackoverflow.com/questions/69814886/blank-page-in-kubernetes-ingress
+#    TO DO - try to add /argocd path at https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/templates/argocd-server/deployment.yaml  (download first):      
 
 
 # https://github.com/redhat-developer/gitops-operator/issues/277#issuecomment-1044881417
